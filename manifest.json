@@ -1,13 +1,24 @@
-```json
 {
-    "name": "விநாயகர் சதுர்த்தி விழா 2026",
-    "short_name": "விநாயகர் விழா",
-    "description": "விநாயகர் சதுர்த்தி விழா 2026 தகவல்கள் மற்றும் நன்கொடை விவரங்கள்",
-    "start_url": "./index.html",
-    "display": "standalone",
-    "background_color": "#fff7ed",
-    "theme_color": "#b45309",
-    "orientation": "portrait",
-    "lang": "ta-IN"
+  "name": "விநாயகர் சதுர்த்தி விழா 2026",
+  "short_name": "விநாயகர் 2026",
+  "description": "விநாயகர் சதுர்த்தி விழா 2026 - விழா தகவல்கள் மற்றும் நன்கொடை விவரங்கள்",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fff7ed",
+  "theme_color": "#b45309",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2316/2316029.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2316/2316029.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
-```
