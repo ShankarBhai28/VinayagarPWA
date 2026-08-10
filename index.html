@@ -483,7 +483,7 @@
             </section>
         </div>
 
-        <!-- 5. EXPENSES TAB -->
+<!-- 5. EXPENSES TAB -->
         <div id="tab-expenses" class="tab-content">
             <button class="back-btn" onclick="handleBackAction()">⬅️ Back</button>
             <section class="card">
@@ -492,15 +492,18 @@
                     <span class="badge" style="background:#fee2e2; color:#b91c1c;" id="badge-expenses">₹0</span>
                 </h2>
                 <div class="table-responsive">
-                    <table>
+                    <table class="adaptable-table">
                         <thead>
                             <tr>
-                                <th>விவரம்</th>
-                                <th>தொகை</th>
+                                <th style="width: 40px; text-align: center;">SL.No</th>
+                                <th style="white-space: nowrap;">Date</th>
+                                <th style="min-width: 150px;">Item Involved</th>
+                                <th style="text-align: right; white-space: nowrap;">Amount</th>
+                                <th style="min-width: 100px;">Paid By</th>
                             </tr>
                         </thead>
                         <tbody id="table-expenses">
-                            <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                            <tr><td colspan="5" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -801,20 +804,60 @@
             }
         }
 
-        async function loadExpenses() {
+async function loadExpenses() {
             try {
-                const { data } = await supabaseClient.from('expenses').select('*');
-                if (!data || data.length === 0) { document.getElementById('table-expenses').innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>'; return; }
+                const { data, error } = await supabaseClient
+                    .from('expenses')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) { 
+                    document.getElementById('table-expenses').innerHTML = 
+                        '<tr><td colspan="5" class="loading-text">பதிவுகள் இல்லை</td></tr>'; 
+                    document.getElementById('badge-expenses').innerText = '₹0';
+                    return; 
+                }
+
                 let html = '', sum = 0;
-                data.forEach(item => {
-                    const amt = Number(item.amount || 0); sum += amt;
-                    html += `<tr><td>${item.title || item.description || '-'}</td><td class="amt-red">${formatINR(amt)}</td></tr>`;
+                data.forEach((item, index) => {
+                    const amt = Number(item.amount || 0); 
+                    sum += amt;
+
+                    let formattedDate = '-';
+                    if (item.expense_date || item.date) {
+                        const d = new Date(item.expense_date || item.date);
+                        if (!isNaN(d)) {
+                            formattedDate = String(d.getDate()).padStart(2, '0') + '-' + 
+                                            String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+                                            d.getFullYear();
+                        } else {
+                            formattedDate = item.expense_date || item.date;
+                        }
+                    }
+
+                    const itemDetails = item.item || item.title || item.description || '-';
+                    const paidBy = item.paid_by || '-';
+
+                    html += `<tr>
+                        <td style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
+                        <td style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
+                        <td style="font-weight: 600; color: #3f2a14;">${itemDetails}</td>
+                        <td class="amt-red" style="text-align: right; white-space: nowrap;">${formatINR(amt)}</td>
+                        <td style="font-weight: bold; color: #c2410c;">${paidBy}</td>
+                    </tr>`;
                 });
+
                 document.getElementById('table-expenses').innerHTML = html;
                 totals.expenses = sum;
                 document.getElementById('badge-expenses').innerText = formatINR(sum);
                 updateCalculatedTotals();
-            } catch (e) { document.getElementById('table-expenses').innerHTML = '<tr><td colspan="2">பிழை</td></tr>'; }
+            } catch (e) { 
+                console.error(e);
+                document.getElementById('table-expenses').innerHTML = 
+                    '<tr><td colspan="5" style="text-align:center; color:red; padding:15px;">தரவு ஏற்றுவதில் பிழை ஏற்பட்டது</td></tr>'; 
+            }
         }
 
         async function loadPrograms() {
