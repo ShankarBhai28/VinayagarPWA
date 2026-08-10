@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vinayagar-pwa-v2';
+const CACHE_NAME = 'vinayagar-pwa-v3'; // Bump version to clear old v2 cache
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -33,21 +33,34 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event
 self.addEventListener('fetch', (event) => {
-  // Do not cache Supabase API calls or external dynamic requests
+  // Do not intercept or cache Supabase API database calls
   if (event.request.url.includes('supabase.co')) {
     return;
   }
 
+  // Network-First Strategy for HTML / app pages
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
+    fetch(event.request)
+      .then((networkResponse) => {
+        // Clone and store updated file in cache for future offline access
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
         }
-      });
-    })
+        return networkResponse;
+      })
+      .catch(() => {
+        // If offline or fetch fails, fallback to cache
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          if (event.request.mode === 'navigate') {
+            return caches.match('./index.html');
+          }
+        });
+      })
   );
 });
