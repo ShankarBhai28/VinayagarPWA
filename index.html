@@ -16,6 +16,7 @@
     <style>
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -26,47 +27,89 @@
             padding-bottom: 30px;
         }
 
+        /* Header */
         .hero {
             background: linear-gradient(135deg, #b45309, #ea580c);
             color: white;
             text-align: center;
-            padding: 35px 20px;
-            border-radius: 0 0 30px 30px;
+            padding: 25px 20px;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 0 4px 15px rgba(180, 83, 9, 0.3);
         }
 
-        .ganesha {
-            font-size: 70px;
-            margin-bottom: 5px;
-        }
-
-        .hero h1 {
-            margin: 5px 0;
-            font-size: 28px;
-        }
-
-        .hero p {
-            margin: 8px 0 0;
-            font-size: 16px;
-        }
+        .ganesha { font-size: 50px; margin-bottom: 5px; }
+        .hero h1 { margin: 5px 0; font-size: 24px; }
+        .hero p { margin: 5px 0 0; font-size: 14px; opacity: 0.9; }
 
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: auto;
-            padding: 20px;
+            padding: 15px;
         }
 
+        /* --- NEW TAB MENU STYLES --- */
+        .tab-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: white;
+            border: 2px solid #fed7aa;
+            color: #9a3412;
+            padding: 15px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        /* Active Tab Button Styling */
+        .tab-btn.active {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-color: #d97706;
+            box-shadow: 0 6px 15px rgba(217, 119, 6, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* --------------------------- */
+
+        /* Cards & Content */
         .card {
             background: white;
             margin-bottom: 18px;
-            padding: 22px;
+            padding: 20px;
             border-radius: 18px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            border: 1px solid #fff3e0;
         }
 
         .card h2 {
             margin-top: 0;
             color: #c2410c;
-            font-size: 21px;
+            font-size: 18px;
             border-bottom: 2px solid #fed7aa;
             padding-bottom: 8px;
             display: flex;
@@ -74,33 +117,12 @@
             align-items: center;
         }
 
-        .festival-info {
-            text-align: center;
-        }
-
-        .date {
-            font-size: 22px;
-            font-weight: bold;
-            color: #9a3412;
-        }
-
-        .collection-box {
-            text-align: center;
-            background: #fff7ed;
-            border: 2px solid #fed7aa;
-        }
-
-        .amount-display {
-            font-size: 36px;
-            font-weight: bold;
-            color: #15803d;
-            margin: 10px 0;
-        }
-
-        .label {
-            color: #777;
-            font-size: 14px;
-        }
+        .festival-info { text-align: center; }
+        .date { font-size: 20px; font-weight: bold; color: #9a3412; }
+        
+        .collection-box { text-align: center; background: #fffbeb; border: 2px solid #fcd34d; }
+        .amount-display { font-size: 32px; font-weight: bold; color: #15803d; margin: 10px 0; }
+        .label { color: #777; font-size: 13px; }
 
         .stats {
             display: grid;
@@ -109,125 +131,34 @@
             margin-top: 15px;
         }
 
-        .stat {
-            background: #fff;
-            padding: 12px 5px;
-            border-radius: 12px;
-            border: 1px solid #fed7aa;
-            text-align: center;
-        }
-
-        .stat.balance-box {
-            grid-column: span 2;
-            background: #f0fdf4;
-            border-color: #bbf7d0;
-        }
-
-        .stat strong {
-            display: block;
-            font-size: 18px;
-            color: #9a3412;
-        }
-
-        .stat.balance-box strong {
-            font-size: 22px;
-            color: #15803d;
-        }
-
-        .stat span {
-            font-size: 12px;
-            color: #777;
-        }
+        .stat { background: #fff; padding: 12px 5px; border-radius: 12px; border: 1px solid #fed7aa; text-align: center; }
+        .stat.balance-box { grid-column: span 2; background: #f0fdf4; border-color: #bbf7d0; }
+        .stat strong { display: block; font-size: 18px; color: #9a3412; }
+        .stat.balance-box strong { font-size: 24px; color: #15803d; }
+        .stat span { font-size: 12px; color: #777; }
 
         /* Tables */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; margin-top: 10px; }
+        th { background-color: #ffedd5; color: #9a3412; padding: 10px; font-size: 13px; }
+        td { padding: 10px; border-bottom: 1px solid #f3f4f6; }
+        .amt-green { font-weight: bold; color: #15803d; }
+        .amt-red { font-weight: bold; color: #b91c1c; }
+        
+        .badge { background: #ffedd5; color: #9a3412; font-size: 12px; padding: 4px 8px; border-radius: 12px; }
+        .announcement { background: #fffbeb; border-left: 5px solid #f59e0b; }
+        .list-item { padding: 10px 0; border-bottom: 1px dashed #fed7aa; }
+        .list-item:last-child { border-bottom: none; }
+        
+        .loading-text { text-align: center; color: #777; padding: 20px; font-style: italic; }
+        .error-banner { background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: none; text-align: center; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            text-align: left;
-            margin-top: 10px;
-        }
+        /* Footer */
+        .footer { text-align: center; padding: 15px 10px 30px; color: #777; font-size: 12px; }
+        .footer .om { font-size: 24px; }
 
-        th {
-            background-color: #ffedd5;
-            color: #9a3412;
-            padding: 10px;
-        }
-
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #f3f4f6;
-        }
-
-        .amt-green {
-            font-weight: bold;
-            color: #15803d;
-        }
-
-        .amt-red {
-            font-weight: bold;
-            color: #b91c1c;
-        }
-
-        .badge {
-            background: #ffedd5;
-            color: #9a3412;
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 12px;
-        }
-
-        .announcement {
-            background: #fffbeb;
-            border-left: 5px solid #f59e0b;
-        }
-
-        .list-item {
-            padding: 10px 0;
-            border-bottom: 1px dashed #fed7aa;
-        }
-
-        .list-item:last-child {
-            border-bottom: none;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 25px 10px 35px;
-            color: #777;
-            font-size: 13px;
-        }
-
-        .footer .om {
-            font-size: 28px;
-        }
-
-        .loading-text {
-            text-align: center;
-            color: #777;
-            padding: 10px;
-            font-style: italic;
-        }
-
-        .error-banner {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: none;
-            text-align: center;
-        }
-
-        @media (max-width: 400px) {
-            .hero h1 { font-size: 24px; }
-            .amount-display { font-size: 30px; }
-            th, td { padding: 8px 5px; font-size: 13px; }
+        @media (min-width: 600px) {
+            .tab-menu { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
 </head>
@@ -236,179 +167,199 @@
     <!-- Header -->
     <header class="hero">
         <div class="ganesha">🕉️</div>
-        <h1>விநாயகர் சதுர்த்தி விழா</h1>
-        <p>2026</p>
+        <h1>விநாயகர் சதுர்த்தி விழா 2026</h1>
         <p>🌺 அனைவரும் வருக! விநாயகர் அருள் பெறுக! 🌺</p>
     </header>
 
     <main class="container">
-
+        
+        <!-- Error Display -->
         <div id="error-banner" class="error-banner"></div>
 
-        <!-- Festival Information -->
-        <section class="card festival-info">
-            <h2>🛕 விழா தகவல்கள்</h2>
-            <div id="festival-info" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</div>
-        </section>
+        <!-- NAVIGATION TAB MENU -->
+        <nav class="tab-menu">
+            <button class="tab-btn active" onclick="switchTab('tab-home', this)">🏠 முகப்பு</button>
+            <button class="tab-btn" onclick="switchTab('tab-friends', this)">🤝 நண்பர்கள்</button>
+            <button class="tab-btn" onclick="switchTab('tab-sponsors', this)">⭐ உபயதாரர்கள்</button>
+            <button class="tab-btn" onclick="switchTab('tab-area', this)">🏘️ பகுதி வசூல்</button>
+            <button class="tab-btn" onclick="switchTab('tab-expenses', this)">💸 செலவுகள்</button>
+            <button class="tab-btn" onclick="switchTab('tab-programs', this)">🎉 நிகழ்ச்சிகள்</button>
+        </nav>
 
-        <!-- Collection Summary -->
-        <section class="card collection-box">
-            <h2>💰 வரவு - செலவு கணக்கு</h2>
-            <div class="label">மொத்த வசூல்</div>
-            <div class="amount-display" id="summary-total-collection">₹0</div>
-
-            <div class="stats">
-                <div class="stat">
-                    <strong id="summary-expenses">₹0</strong>
-                    <span>மொத்த செலவு</span>
+        <!-- 1. HOME TAB (Summary & Info) -->
+        <div id="tab-home" class="tab-content active">
+            <section class="card collection-box">
+                <h2>💰 வரவு - செலவு கணக்கு</h2>
+                <div class="label">மொத்த வசூல்</div>
+                <div class="amount-display" id="summary-total-collection">₹0</div>
+                <div class="stats">
+                    <div class="stat">
+                        <strong id="summary-expenses">₹0</strong>
+                        <span>மொத்த செலவு</span>
+                    </div>
+                    <div class="stat">
+                        <strong id="summary-contributors">0</strong>
+                        <span>நன்கொடையாளர்கள்</span>
+                    </div>
+                    <div class="stat balance-box">
+                        <strong id="summary-balance">₹0</strong>
+                        <span>தற்போதைய இருப்பு</span>
+                    </div>
                 </div>
-                <div class="stat">
-                    <strong id="summary-contributors">0</strong>
-                    <span>நன்கொடையாளர்கள்</span>
+            </section>
+
+            <section class="card festival-info">
+                <h2>🛕 விழா தகவல்கள்</h2>
+                <div id="festival-info" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</div>
+            </section>
+
+            <section class="card announcement">
+                <h2>📢 அறிவிப்புகள்</h2>
+                <div id="announcements-list" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</div>
+            </section>
+        </div>
+
+        <!-- 2. FRIENDS TAB -->
+        <div id="tab-friends" class="tab-content">
+            <section class="card">
+                <h2>
+                    <span>🤝 நண்பர்கள் நன்கொடை</span>
+                    <span class="badge" id="badge-friends">₹0</span>
+                </h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>தேதி</th>
+                                <th>பெயர்</th>
+                                <th>தொகை</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-friends">
+                            <tr><td colspan="3" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="stat balance-box">
-                    <strong id="summary-balance">₹0</strong>
-                    <span>தற்போதைய இருப்பு</span>
+            </section>
+        </div>
+
+        <!-- 3. SPONSORS TAB -->
+        <div id="tab-sponsors" class="tab-content">
+            <section class="card">
+                <h2>
+                    <span>⭐ உபயதாரர்கள்</span>
+                    <span class="badge" id="badge-sponsors">₹0</span>
+                </h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>பெயர்</th>
+                                <th>விவரம் / தொகை</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-sponsors">
+                            <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
 
-        <!-- Announcements -->
-        <section class="card announcement">
-            <h2>📢 அறிவிப்புகள்</h2>
-            <div id="announcements-list" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</div>
-        </section>
+        <!-- 4. AREA COLLECTION TAB -->
+        <div id="tab-area" class="tab-content">
+            <section class="card">
+                <h2>
+                    <span>🏘️ பகுதி வாரியான வசூல்</span>
+                    <span class="badge" id="badge-area">₹0</span>
+                </h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>பகுதி / தெரு</th>
+                                <th>தொகை</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-area">
+                            <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
 
-        <!-- Friends Contributions -->
-        <section class="card">
-            <h2>
-                <span>🤝 நண்பர்கள் நன்கொடை</span>
-                <span class="badge" id="badge-friends">₹0</span>
-            </h2>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>தேதி</th>
-                            <th>பெயர்</th>
-                            <th>தொகை</th>
-                            <th>முறை</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-friends">
-                        <tr><td colspan="4" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        <!-- 5. EXPENSES TAB -->
+        <div id="tab-expenses" class="tab-content">
+            <section class="card">
+                <h2>
+                    <span>💸 செலவுகள்</span>
+                    <span class="badge" style="background:#fee2e2; color:#b91c1c;" id="badge-expenses">₹0</span>
+                </h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>விவரம்</th>
+                                <th>தொகை</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-expenses">
+                            <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
 
-        <!-- Sponsor Contributions -->
-        <section class="card">
-            <h2>
-                <span>⭐ உபயதாரர்கள்</span>
-                <span class="badge" id="badge-sponsors">₹0</span>
-            </h2>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>பெயர்</th>
-                            <th>விவரம் / தொகை</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-sponsors">
-                        <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Area Collections -->
-        <section class="card">
-            <h2>
-                <span>🏘️ பகுதி வாரியான வசூல்</span>
-                <span class="badge" id="badge-area">₹0</span>
-            </h2>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>பகுதி / தெரு</th>
-                            <th>தொகை</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-area">
-                        <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Expenses -->
-        <section class="card">
-            <h2>
-                <span>💸 செலவுகள்</span>
-                <span class="badge" style="background:#fee2e2; color:#b91c1c;" id="badge-expenses">₹0</span>
-            </h2>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>விவரம்</th>
-                            <th>தொகை</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-expenses">
-                        <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Programs -->
-        <section class="card">
-            <h2>🎉 விழா நிகழ்ச்சிகள்</h2>
-            <div id="programs-list" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</div>
-        </section>
+        <!-- 6. PROGRAMS TAB -->
+        <div id="tab-programs" class="tab-content">
+            <section class="card">
+                <h2>🎉 விழா நிகழ்ச்சிகள்</h2>
+                <div id="programs-list" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</div>
+            </section>
+        </div>
 
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="om">🙏</div>
         <p>விநாயகர் அருள் அனைவருக்கும் கிடைக்கட்டும்.</p>
-        <p>© 2026 Vinayagar Chaturthi</p>
     </footer>
 
-    <!-- JavaScript & Supabase Integration -->
+    <!-- JavaScript Base -->
     <script>
-        // =========================================================
-        // 1. SUPABASE KEYS (REPLACE THESE WITH YOUR ACTUAL KEYS)
-        // =========================================================
+        // --- TAB SWITCHING LOGIC ---
+        function switchTab(tabId, btnElement) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active state from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab content and activate button
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // --- SUPABASE CONFIGURATION ---
         const SUPABASE_URL = "https://fwwfkzruacigxeldemij.supabase.co"; 
         const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_0c5eQ4pctlyarxQkg90BYw_SpyORtw6";
 
-        // Register Service Worker for PWA
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
-                navigator.serviceWorker.register("sw.js")
-                    .then(() => console.log("SW Registered"))
-                    .catch(err => console.log("SW Error:", err));
+                navigator.serviceWorker.register("sw.js").catch(err => console.log("SW Error:", err));
             });
         }
 
-        // Initialize Supabase Client
         let supabaseClient;
         try {
             supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
         } catch (e) {
-            showError("Supabase setup incomplete.");
-        }
-
-        function showError(msg) {
-            const err = document.getElementById('error-banner');
-            err.style.display = 'block';
-            err.innerText = msg;
+            document.getElementById('error-banner').style.display = 'block';
+            document.getElementById('error-banner').innerText = "Supabase setup incomplete.";
         }
 
         function formatINR(amount) {
@@ -426,174 +377,109 @@
         function updateCalculatedTotals() {
             const totalCollection = totals.friends + totals.sponsors + totals.area;
             const balance = totalCollection - totals.expenses;
-
             document.getElementById('summary-total-collection').innerText = formatINR(totalCollection);
             document.getElementById('summary-expenses').innerText = formatINR(totals.expenses);
             document.getElementById('summary-balance').innerText = formatINR(balance);
             document.getElementById('summary-contributors').innerText = totals.count;
         }
 
-        // Fetch Functions
+        // Data Fetching
         async function loadFestivalSettings() {
-            const el = document.getElementById('festival-info');
             try {
                 const { data } = await supabaseClient.from('festival_settings').select('*');
-                if (!data || data.length === 0) {
-                    el.innerHTML = '<p class="date">விநாயகர் சதுர்த்தி 2026</p><p>📍 இடம்: நமது கோயில் வளாகம்</p>';
-                    return;
-                }
-                let html = '';
-                data.forEach(item => {
-                    html += `<p><strong>${item.key || item.setting_name || 'தகவல்'}:</strong> ${item.value || item.setting_value || '-'}</p>`;
-                });
-                el.innerHTML = html;
-            } catch (err) {
-                el.innerHTML = '<p>தகவல்களை ஏற்றுவதில் சிக்கல்</p>';
-            }
+                let html = (data && data.length > 0) ? data.map(item => `<p><strong>${item.key || item.setting_name || 'தகவல்'}:</strong> ${item.value || item.setting_value || '-'}</p>`).join('') : '<p>தகவல்கள் விரைவில்...</p>';
+                document.getElementById('festival-info').innerHTML = html;
+            } catch (e) { document.getElementById('festival-info').innerHTML = 'ஏற்றுவதில் பிழை'; }
         }
 
         async function loadAnnouncements() {
-            const el = document.getElementById('announcements-list');
             try {
                 const { data } = await supabaseClient.from('announcements').select('*').order('created_at', { ascending: false });
-                if (!data || data.length === 0) {
-                    el.innerHTML = '<p>அறிவிப்புகள் எதுவும் இல்லை.</p>';
-                    return;
-                }
-                let html = '';
-                data.forEach(a => {
-                    html += `<div class="list-item"><strong>${a.title || a.announcement_text || ''}</strong><br><small>${a.details || a.description || ''}</small></div>`;
-                });
-                el.innerHTML = html;
-            } catch (err) {
-                el.innerHTML = '<p>அறிவிப்புகளை ஏற்ற முடியவில்லை</p>';
-            }
+                let html = (data && data.length > 0) ? data.map(a => `<div class="list-item"><strong>${a.title || a.announcement_text || ''}</strong><br><small>${a.details || a.description || ''}</small></div>`).join('') : '<p>அறிவிப்புகள் இல்லை.</p>';
+                document.getElementById('announcements-list').innerHTML = html;
+            } catch (e) { document.getElementById('announcements-list').innerHTML = 'ஏற்றுவதில் பிழை'; }
         }
 
         async function loadFriendContributions() {
-            const tbody = document.getElementById('table-friends');
             try {
                 const { data } = await supabaseClient.from('friend_contributions').select('*').order('created_at', { ascending: false });
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="loading-text">பதிவுகள் இல்லை</td></tr>';
-                    return;
-                }
+                if (!data || data.length === 0) { document.getElementById('table-friends').innerHTML = '<tr><td colspan="3" class="loading-text">பதிவுகள் இல்லை</td></tr>'; return; }
                 let html = '', sum = 0;
                 data.forEach(item => {
-                    const amt = Number(item.amount || 0);
-                    sum += amt;
-                    html += `<tr><td>${formatDate(item.contribution_date)}</td><td><strong>${item.name}</strong></td><td class="amt-green">${formatINR(amt)}</td><td>${item.payment_mode || 'Cash'}</td></tr>`;
+                    const amt = Number(item.amount || 0); sum += amt;
+                    html += `<tr><td>${formatDate(item.contribution_date)}</td><td><strong>${item.name}</strong><br><small style="color:#777;">${item.payment_mode || 'Cash'}</small></td><td class="amt-green">${formatINR(amt)}</td></tr>`;
                 });
-                tbody.innerHTML = html;
-                totals.friends = sum;
-                totals.count = data.length;
+                document.getElementById('table-friends').innerHTML = html;
+                totals.friends = sum; totals.count = data.length;
                 document.getElementById('badge-friends').innerText = formatINR(sum);
                 updateCalculatedTotals();
-            } catch (err) {
-                tbody.innerHTML = '<tr><td colspan="4" class="loading-text">தரவு ஏற்றுவதில் பிழை</td></tr>';
-            }
+            } catch (e) { document.getElementById('table-friends').innerHTML = '<tr><td colspan="3">பிழை</td></tr>'; }
         }
 
         async function loadSponsorContributions() {
-            const tbody = document.getElementById('table-sponsors');
             try {
                 const { data } = await supabaseClient.from('sponsor_contributions').select('*');
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>';
-                    return;
-                }
+                if (!data || data.length === 0) { document.getElementById('table-sponsors').innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>'; return; }
                 let html = '', sum = 0;
                 data.forEach(item => {
-                    const amt = Number(item.amount || 0);
-                    sum += amt;
+                    const amt = Number(item.amount || 0); sum += amt;
                     html += `<tr><td><strong>${item.name || item.sponsor_name || '-'}</strong></td><td class="amt-green">${amt > 0 ? formatINR(amt) : (item.remarks || 'உபயம்')}</td></tr>`;
                 });
-                tbody.innerHTML = html;
+                document.getElementById('table-sponsors').innerHTML = html;
                 totals.sponsors = sum;
                 document.getElementById('badge-sponsors').innerText = formatINR(sum);
                 updateCalculatedTotals();
-            } catch (err) {
-                tbody.innerHTML = '<tr><td colspan="2" class="loading-text">தரவு ஏற்றுவதில் பிழை</td></tr>';
-            }
+            } catch (e) { document.getElementById('table-sponsors').innerHTML = '<tr><td colspan="2">பிழை</td></tr>'; }
         }
 
         async function loadAreaCollections() {
-            const tbody = document.getElementById('table-area');
             try {
                 const { data } = await supabaseClient.from('area_collections').select('*');
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>';
-                    return;
-                }
+                if (!data || data.length === 0) { document.getElementById('table-area').innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>'; return; }
                 let html = '', sum = 0;
                 data.forEach(item => {
-                    const amt = Number(item.amount || item.total_amount || 0);
-                    sum += amt;
+                    const amt = Number(item.amount || item.total_amount || 0); sum += amt;
                     html += `<tr><td>${item.area_name || item.street_name || '-'}</td><td class="amt-green">${formatINR(amt)}</td></tr>`;
                 });
-                tbody.innerHTML = html;
+                document.getElementById('table-area').innerHTML = html;
                 totals.area = sum;
                 document.getElementById('badge-area').innerText = formatINR(sum);
                 updateCalculatedTotals();
-            } catch (err) {
-                tbody.innerHTML = '<tr><td colspan="2" class="loading-text">தரவு ஏற்றுவதில் பிழை</td></tr>';
-            }
+            } catch (e) { document.getElementById('table-area').innerHTML = '<tr><td colspan="2">பிழை</td></tr>'; }
         }
 
         async function loadExpenses() {
-            const tbody = document.getElementById('table-expenses');
             try {
                 const { data } = await supabaseClient.from('expenses').select('*');
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>';
-                    return;
-                }
+                if (!data || data.length === 0) { document.getElementById('table-expenses').innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>'; return; }
                 let html = '', sum = 0;
                 data.forEach(item => {
-                    const amt = Number(item.amount || 0);
-                    sum += amt;
+                    const amt = Number(item.amount || 0); sum += amt;
                     html += `<tr><td>${item.title || item.description || '-'}</td><td class="amt-red">${formatINR(amt)}</td></tr>`;
                 });
-                tbody.innerHTML = html;
+                document.getElementById('table-expenses').innerHTML = html;
                 totals.expenses = sum;
                 document.getElementById('badge-expenses').innerText = formatINR(sum);
                 updateCalculatedTotals();
-            } catch (err) {
-                tbody.innerHTML = '<tr><td colspan="2" class="loading-text">தரவு ஏற்றுவதில் பிழை</td></tr>';
-            }
+            } catch (e) { document.getElementById('table-expenses').innerHTML = '<tr><td colspan="2">பிழை</td></tr>'; }
         }
 
         async function loadPrograms() {
-            const el = document.getElementById('programs-list');
             try {
                 const { data } = await supabaseClient.from('programs').select('*');
-                if (!data || data.length === 0) {
-                    el.innerHTML = '<p>நிகழ்ச்சிகள் விவரம் இல்லை.</p>';
-                    return;
-                }
-                let html = '';
-                data.forEach(p => {
-                    html += `<div class="list-item"><strong>${p.program_name || p.title}</strong><br><small>⏰ ${p.program_time || '-'} | 📍 ${p.location || 'விழா மேடை'}</small></div>`;
-                });
-                el.innerHTML = html;
-            } catch (err) {
-                el.innerHTML = '<p>நிகழ்ச்சிகளை ஏற்ற முடியவில்லை</p>';
-            }
+                let html = (data && data.length > 0) ? data.map(p => `<div class="list-item"><strong>${p.program_name || p.title}</strong><br><small>⏰ ${p.program_time || '-'} | 📍 ${p.location || 'விழா மேடை'}</small></div>`).join('') : '<p>நிகழ்ச்சிகள் இல்லை.</p>';
+                document.getElementById('programs-list').innerHTML = html;
+            } catch (e) { document.getElementById('programs-list').innerHTML = 'ஏற்றுவதில் பிழை'; }
         }
 
-        // Initialize Data Load
         window.addEventListener('DOMContentLoaded', () => {
-            if (SUPABASE_URL === "YOUR_SUPABASE_URL_HERE") {
-                showError("Supabase credentials missing! Edit index.html lines 282-283.");
+            if (SUPABASE_URL.includes("YOUR_SUPABASE")) {
+                document.getElementById('error-banner').style.display = 'block';
+                document.getElementById('error-banner').innerText = "Supabase credentials missing! Edit index.html lines 311-312.";
                 return;
             }
-            loadFestivalSettings();
-            loadAnnouncements();
-            loadFriendContributions();
-            loadSponsorContributions();
-            loadAreaCollections();
-            loadExpenses();
-            loadPrograms();
+            loadFestivalSettings(); loadAnnouncements(); loadFriendContributions();
+            loadSponsorContributions(); loadAreaCollections(); loadExpenses(); loadPrograms();
         });
     </script>
 </body>
