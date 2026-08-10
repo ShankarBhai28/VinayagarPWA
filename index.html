@@ -337,7 +337,7 @@
             </section>
         </div>
 
-        <!-- 2. FRIENDS TAB (WITH TOTAL CARD) -->
+        <!-- 2. FRIENDS TAB -->
         <div id="tab-friends" class="tab-content">
             <div class="card" style="margin-bottom: 15px;">
                 <h2>🤝 நண்பர்கள் நன்கொடை (Friends Collection)</h2>
@@ -350,7 +350,7 @@
 
             <section class="card">
                 <h2>
-                    <span>📋 நன்கொடை விவரம் (Contributions Log)</span>
+                    <span>📋 நன்கொடை விவரம்</span>
                     <span class="badge" id="badge-friends">₹0</span>
                 </h2>
                 <div class="table-responsive">
@@ -360,7 +360,7 @@
                                 <th style="width: 40px; text-align: center;">Sl.No</th>
                                 <th style="white-space: nowrap;">Date</th>
                                 <th style="min-width: 120px;">Name</th>
-                                <th style="white-space: nowrap; text-align: right;">Amount Contributed</th>
+                                <th style="white-space: nowrap; text-align: left;">Amt Contributed</th>
                                 <th style="min-width: 100px;">Given to</th>
                                 <th style="min-width: 120px;">Remarks</th>
                             </tr>
@@ -420,7 +420,7 @@
 
             <section class="card">
                 <h2>
-                    <span>📅 தினசரி வசூல் விவரம் (Daily Log)</span>
+                    <span>📅 தினசரி வசூல் விவரம்</span>
                     <span class="badge" id="badge-area">₹0</span>
                 </h2>
                 <div class="table-responsive">
@@ -582,7 +582,7 @@
             } catch (e) { document.getElementById('announcements-list').innerHTML = 'ஏற்றுவதில் பிழை'; }
         }
 
-        /* --- FRIEND CONTRIBUTIONS WITH SUMMARY TOTAL DISPLAY --- */
+        /* --- FRIEND CONTRIBUTIONS WITH LEFT ALIGNED AMOUNT --- */
         async function loadFriendContributions() {
             try {
                 const { data, error } = await supabaseClient
@@ -620,7 +620,7 @@
                         <td style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
                         <td style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
                         <td style="font-weight: bold; color: #3f2a14;">${item.name || '-'}</td>
-                        <td class="amt-green" style="text-align: right; white-space: nowrap;">${formatINR(amt)}</td>
+                        <td class="amt-green" style="text-align: left; white-space: nowrap;">${formatINR(amt)}</td>
                         <td>${item.given_to || '-'}</td>
                         <td style="color: #666; font-size: 12px;">${item.remarks || '-'}</td>
                     </tr>`;
