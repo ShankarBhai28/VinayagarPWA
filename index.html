@@ -226,8 +226,8 @@
             margin-bottom: 18px;
             padding: 20px;
             border-radius: 18px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            border: 1px solid #fff3e0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid #ffedd5;
         }
 
         .card h2 {
@@ -235,7 +235,7 @@
             color: #c2410c;
             font-size: 18px;
             border-bottom: 2px solid #fed7aa;
-            padding-bottom: 8px;
+            padding-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -245,13 +245,14 @@
             width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid #fed7aa;
         }
 
         .adaptable-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             font-size: 13px;
             text-align: left;
             min-width: 600px;
@@ -260,15 +261,29 @@
         .adaptable-table th {
             background-color: #ffedd5;
             color: #9a3412;
-            padding: 10px 8px;
+            padding: 12px 10px;
             font-size: 13px;
             font-weight: bold;
-            border: 1px solid #fed7aa;
+            border-bottom: 2px solid #fed7aa;
+            border-right: 1px solid #ffedd5;
+        }
+
+        .adaptable-table th:last-child {
+            border-right: none;
         }
 
         .adaptable-table td {
-            padding: 10px 8px;
-            border: 1px solid #f3f4f6;
+            padding: 12px 10px;
+            border-bottom: 1px solid #fee2e2;
+            border-right: 1px solid #fff7ed;
+        }
+
+        .adaptable-table td:last-child {
+            border-right: none;
+        }
+
+        .adaptable-table tbody tr:last-child td {
+            border-bottom: none;
         }
 
         .adaptable-table tbody tr:nth-child(even) { background-color: #fffaf5; }
