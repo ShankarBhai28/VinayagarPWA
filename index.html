@@ -273,6 +273,62 @@
 
         .adaptable-table tbody tr:nth-child(even) { background-color: #fffaf5; }
 
+        /* Responsive Mobile View for Adaptable Tables */
+        @media (max-width: 600px) {
+            .table-responsive {
+                border: none;
+                overflow-x: visible;
+            }
+
+            .adaptable-table {
+                min-width: 100% !important;
+            }
+
+            .adaptable-table thead {
+                display: none;
+            }
+
+            .adaptable-table, 
+            .adaptable-table tbody, 
+            .adaptable-table tr, 
+            .adaptable-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .adaptable-table tr {
+                background: #ffffff;
+                border: 1.5px solid #fed7aa;
+                border-radius: 14px;
+                margin-bottom: 12px;
+                padding: 10px 14px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+
+            .adaptable-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 6px 0;
+                border: none;
+                border-bottom: 1px dashed #fff3e0;
+                font-size: 13px;
+                text-align: right !important;
+            }
+
+            .adaptable-table td:last-child {
+                border-bottom: none;
+            }
+
+            .adaptable-table td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                color: #9a3412;
+                text-align: left;
+                padding-right: 10px;
+            }
+        }
+
         table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; margin-top: 10px; }
         th { background-color: #ffedd5; color: #9a3412; padding: 10px; font-size: 13px; }
         td { padding: 10px; border-bottom: 1px solid #f3f4f6; }
@@ -483,7 +539,7 @@
             </section>
         </div>
 
-<!-- 5. EXPENSES TAB -->
+        <!-- 5. EXPENSES TAB -->
         <div id="tab-expenses" class="tab-content">
             <button class="back-btn" onclick="handleBackAction()">⬅️ Back</button>
             <section class="card">
@@ -662,12 +718,12 @@
                     }
 
                     html += `<tr>
-                        <td style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
-                        <td style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
-                        <td style="font-weight: bold; color: #3f2a14;">${item.name || '-'}</td>
-                        <td class="amt-green" style="text-align: left; white-space: nowrap;">${formatINR(amt)}</td>
-                        <td>${item.given_to || '-'}</td>
-                        <td style="color: #666; font-size: 12px;">${item.remarks || '-'}</td>
+                        <td data-label="Sl.No" style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
+                        <td data-label="Date" style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
+                        <td data-label="Name" style="font-weight: bold; color: #3f2a14;">${item.name || '-'}</td>
+                        <td data-label="Amt Contributed" class="amt-green" style="text-align: left; white-space: nowrap;">${formatINR(amt)}</td>
+                        <td data-label="Given to">${item.given_to || '-'}</td>
+                        <td data-label="Remarks" style="color: #666; font-size: 12px;">${item.remarks || '-'}</td>
                     </tr>`;
                 });
 
@@ -721,12 +777,12 @@
                     const givenTo = item.given_to || '-';
 
                     html += `<tr>
-                        <td style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
-                        <td style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
-                        <td style="font-weight: bold; color: #3f2a14;">${sponsorName}</td>
-                        <td class="amt-green" style="text-align: left; white-space: nowrap;">${amt > 0 ? formatINR(amt) : '-'}</td>
-                        <td style="color: #9a3412; font-weight: 600;">${things}</td>
-                        <td>${givenTo}</td>
+                        <td data-label="Sl.No" style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
+                        <td data-label="Date" style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
+                        <td data-label="Sponsor Name" style="font-weight: bold; color: #3f2a14;">${sponsorName}</td>
+                        <td data-label="Amount" class="amt-green" style="text-align: left; white-space: nowrap;">${amt > 0 ? formatINR(amt) : '-'}</td>
+                        <td data-label="Things Contributed" style="color: #9a3412; font-weight: 600;">${things}</td>
+                        <td data-label="Given to">${givenTo}</td>
                     </tr>`;
                 });
 
@@ -741,6 +797,7 @@
             }
         }
 
+        /* --- AREA COLLECTIONS --- */
         async function loadAreaCollections() {
             try {
                 const { data, error } = await supabaseClient
@@ -781,12 +838,12 @@
                     }
 
                     html += `<tr>
-                        <td style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
-                        <td style="white-space: nowrap; font-size: 13px; font-weight: bold;">${formattedDate}</td>
-                        <td class="amt-green" style="text-align: right; white-space: nowrap;">${formatINR(totalAmt)}</td>
-                        <td style="text-align: right; white-space: nowrap; color: #15803d;">${formatINR(cashAmt)}</td>
-                        <td style="text-align: right; white-space: nowrap; color: #2563eb;">${formatINR(onlineAmt)}</td>
-                        <td style="color: #666; font-size: 12px;">${item.remarks || '-'}</td>
+                        <td data-label="Sl.No" style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
+                        <td data-label="Date" style="white-space: nowrap; font-size: 13px; font-weight: bold;">${formattedDate}</td>
+                        <td data-label="Total Collected" class="amt-green" style="text-align: right; white-space: nowrap;">${formatINR(totalAmt)}</td>
+                        <td data-label="Cash" style="text-align: right; white-space: nowrap; color: #15803d;">${formatINR(cashAmt)}</td>
+                        <td data-label="Online" style="text-align: right; white-space: nowrap; color: #2563eb;">${formatINR(onlineAmt)}</td>
+                        <td data-label="Remarks" style="color: #666; font-size: 12px;">${item.remarks || '-'}</td>
                     </tr>`;
                 });
 
@@ -804,7 +861,8 @@
             }
         }
 
-async function loadExpenses() {
+        /* --- EXPENSES --- */
+        async function loadExpenses() {
             try {
                 const { data, error } = await supabaseClient
                     .from('expenses')
@@ -841,11 +899,11 @@ async function loadExpenses() {
                     const paidBy = item.paid_by || '-';
 
                     html += `<tr>
-                        <td style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
-                        <td style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
-                        <td style="font-weight: 600; color: #3f2a14;">${itemDetails}</td>
-                        <td class="amt-red" style="text-align: right; white-space: nowrap;">${formatINR(amt)}</td>
-                        <td style="font-weight: bold; color: #c2410c;">${paidBy}</td>
+                        <td data-label="SL.No" style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
+                        <td data-label="Date" style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
+                        <td data-label="Item Involved" style="font-weight: 600; color: #3f2a14;">${itemDetails}</td>
+                        <td data-label="Amount" class="amt-red" style="text-align: right; white-space: nowrap;">${formatINR(amt)}</td>
+                        <td data-label="Paid By" style="font-weight: bold; color: #c2410c;">${paidBy}</td>
                     </tr>`;
                 });
 
@@ -860,6 +918,7 @@ async function loadExpenses() {
             }
         }
 
+        /* --- PROGRAMS --- */
         async function loadPrograms() {
             try {
                 const { data } = await supabaseClient.from('programs').select('*').order('date', { ascending: true });
