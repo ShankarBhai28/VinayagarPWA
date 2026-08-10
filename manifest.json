@@ -1,0 +1,13 @@
+```json
+{
+    "name": "விநாயகர் சதுர்த்தி விழா 2026",
+    "short_name": "விநாயகர் விழா",
+    "description": "விநாயகர் சதுர்த்தி விழா 2026 தகவல்கள் மற்றும் நன்கொடை விவரங்கள்",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#fff7ed",
+    "theme_color": "#b45309",
+    "orientation": "portrait",
+    "lang": "ta-IN"
+}
+```

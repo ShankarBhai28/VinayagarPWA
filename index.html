@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>விநாயகர் சதுர்த்தி விழா 2026</title>
+    <meta name="description" content="விநாயகர் சதுர்த்தி விழா 2026 - விழா தகவல்கள் மற்றும் நன்கொடை விவரங்கள்">
+
+    <!-- PWA Config -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#b45309">
+
+    <!-- Supabase JS Client via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, "Noto Sans Tamil", sans-serif;
+            background: #fff7ed;
+            color: #3f2a14;
+            padding-bottom: 30px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #b45309, #ea580c);
+            color: white;
+            text-align: center;
+            padding: 35px 20px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .ganesha {
+            font-size: 70px;
+            margin-bottom: 5px;
+        }
+
+        .hero h1 {
+            margin: 5px 0;
+            font-size: 28px;
+        }
+
+        .hero p {
+            margin: 8px 0 0;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            margin-bottom: 18px;
+            padding: 22px;
+            border-radius: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #c2410c;
+            font-size: 21px;
+            border-bottom: 2px solid #fed7aa;
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .festival-info {
+            text-align: center;
+        }
+
+        .date {
+            font-size: 22px;
+            font-weight: bold;
+            color: #9a3412;
+        }
+
+        .collection-box {
+            text-align: center;
+            background: #fff7ed;
+            border: 2px solid #fed7aa;
+        }
+
+        .amount-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: #15803d;
+            margin: 10px 0;
+        }
+
+        .label {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            background: #fff;
+            padding: 12px 5px;
+            border-radius: 12px;
+            border: 1px solid #fed7aa;
+            text-align: center;
+        }
+
+        .stat.balance-box {
+            grid-column: span 2;
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 18px;
+            color: #9a3412;
+        }
+
+        .stat.balance-box strong {
+            font-size: 22px;
+            color: #15803d;
+        }
+
+        .stat span {
+            font-size: 12px;
+            color: #777;
+        }
+
+        /* Tables */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: #ffedd5;
+            color: #9a3412;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .amt-green {
+            font-weight: bold;
+            color: #15803d;
+        }
+
+        .amt-red {
+            font-weight: bold;
+            color: #b91c1c;
+        }
+
+        .badge {
+            background: #ffedd5;
+            color: #9a3412;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .announcement {
+            background: #fffbeb;
+            border-left: 5px solid #f59e0b;
+        }
+
+        .list-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #fed7aa;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 10px 35px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .footer .om {
+            font-size: 28px;
+        }
+
+        .loading-text {
+            text-align: center;
+            color: #777;
+            padding: 10px;
+            font-style: italic;
+        }
+
+        .error-banner {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+        }
+
+        @media (max-width: 400px) {
+            .hero h1 { font-size: 24px; }
+            .amount-display { font-size: 30px; }
+            th, td { padding: 8px 5px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="hero">
+        <div class="ganesha">🕉️</div>
+        <h1>விநாயகர் சதுர்த்தி விழா</h1>
+        <p>2026</p>
+        <p>🌺 அனைவரும் வருக! விநாயகர் அருள் பெறுக! 🌺</p>
+    </header>
+
+    <main class="container">
+
+        <div id="error-banner" class="error-banner"></div>
+
+        <!-- Festival Information -->
+        <section class="card festival-info">
+            <h2>🛕 விழா தகவல்கள்</h2>
+            <div id="festival-info" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</div>
+        </section>
+
+        <!-- Collection Summary -->
+        <section class="card collection-box">
+            <h2>💰 வரவு - செலவு கணக்கு</h2>
+            <div class="label">மொத்த வசூல்</div>
+            <div class="amount-display" id="summary-total-collection">₹0</div>
+
+            <div class="stats">
+                <div class="stat">
+                    <strong id="summary-expenses">₹0</strong>
+                    <span>மொத்த செலவு</span>
+                </div>
+                <div class="stat">
+                    <strong id="summary-contributors">0</strong>
+                    <span>நன்கொடையாளர்கள்</span>
+                </div>
+                <div class="stat balance-box">
+                    <strong id="summary-balance">₹0</strong>
+                    <span>தற்போதைய இருப்பு</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Announcements -->
+        <section class="card announcement">
+            <h2>📢 அறிவிப்புகள்</h2>
+            <div id="announcements-list" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</div>
+        </section>
+
+        <!-- Friends Contributions -->
+        <section class="card">
+            <h2>
+                <span>🤝 நண்பர்கள் நன்கொடை</span>
+                <span class="badge" id="badge-friends">₹0</span>
+            </h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>தேதி</th>
+                            <th>பெயர்</th>
+                            <th>தொகை</th>
+                            <th>முறை</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-friends">
+                        <tr><td colspan="4" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sponsor Contributions -->
+        <section class="card">
+            <h2>
+                <span>⭐ உபயதாரர்கள்</span>
+                <span class="badge" id="badge-sponsors">₹0</span>
+            </h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>பெயர்</th>
+                            <th>விவரம் / தொகை</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-sponsors">
+                        <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Area Collections -->
+        <section class="card">
+            <h2>
+                <span>🏘️ பகுதி வாரியான வசூல்</span>
+                <span class="badge" id="badge-area">₹0</span>
+            </h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>பகுதி / தெரு</th>
+                            <th>தொகை</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-area">
+                        <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Expenses -->
+        <section class="card">
+            <h2>
+                <span>💸 செலவுகள்</span>
+                <span class="badge" style="background:#fee2e2; color:#b91c1c;" id="badge-expenses">₹0</span>
+            </h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>விவரம்</th>
+                            <th>தொகை</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-expenses">
+                        <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Programs -->
+        <section class="card">
+            <h2>🎉 விழா நிகழ்ச்சிகள்</h2>
+            <div id="programs-list" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="om">🙏</div>
+        <p>விநாயகர் அருள் அனைவருக்கும் கிடைக்கட்டும்.</p>
+        <p>© 2026 Vinayagar Chaturthi</p>
+    </footer>
+
+    <!-- JavaScript & Supabase Integration -->
+    <script>
+        // =========================================================
+        // 1. SUPABASE KEYS (REPLACE THESE WITH YOUR ACTUAL KEYS)
+        // =========================================================
+        const SUPABASE_URL = "https://fwwfkzruacigxeldemij.supabase.co"; 
+        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_0c5eQ4pctlyarxQkg90BYw_SpyORtw6";
+
+        // Register Service Worker for PWA
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("sw.js")
+                    .then(() => console.log("SW Registered"))
+                    .catch(err => console.log("SW Error:", err));
+            });
+        }
+
+        // Initialize Supabase Client
+        let supabaseClient;
+        try {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        } catch (e) {
+            showError("Supabase setup incomplete.");
+        }
+
+        function showError(msg) {
+            const err = document.getElementById('error-banner');
+            err.style.display = 'block';
+            err.innerText = msg;
+        }
+
+        function formatINR(amount) {
+            return '₹' + Number(amount || 0).toLocaleString('en-IN');
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit' });
+        }
+
+        let totals = { friends: 0, sponsors: 0, area: 0, expenses: 0, count: 0 };
+
+        function updateCalculatedTotals() {
+            const totalCollection = totals.friends + totals.sponsors + totals.area;
+            const balance = totalCollection - totals.expenses;
+
+            document.getElementById('summary-total-collection').innerText = formatINR(totalCollection);
+            document.getElementById('summary-expenses').innerText = formatINR(totals.expenses);
+            document.getElementById('summary-balance').innerText = formatINR(balance);
+            document.getElementById('summary-contributors').innerText = totals.count;
+        }
+
+        // Fetch Functions
+        async function loadFestivalSettings() {
+            const el = document.getElementById('festival-info');
+            try {
+                const { data } = await supabaseClient.from('festival_settings').select('*');
+                if (!data || data.length === 0) {
+                    el.innerHTML = '<p class="date">விநாயகர் சதுர்த்தி 2026</p><p>📍 இடம்: நமது கோயில் வளாகம்</p>';
+                    return;
+                }
+                let html = '';
+                data.forEach(item => {
+                    html += `<p><strong>${item.key || item.setting_name || 'தகவல்'}:</strong> ${item.value || item.setting_value || '-'}</p>`;
+                });
+                el.innerHTML = html;
+            } catch (err) {
+                el.innerHTML = '<p>தகவல்களை ஏற்றுவதில் சிக்கல்</p>';
+            }
+        }
+
+        async function loadAnnouncements() {
+            const el = document.getElementById('announcements-list');
+            try {
+                const { data } = await supabaseClient.from('announcements').select('*').order('created_at', { ascending: false });
+                if (!data || data.length === 0) {
+                    el.innerHTML = '<p>அறிவிப்புகள் எதுவும் இல்லை.</p>';
+                    return;
+                }
+                let html = '';
+                data.forEach(a => {
+                    html += `<div class="list-item"><strong>${a.title || a.announcement_text || ''}</strong><br><small>${a.details || a.description || ''}</small></div>`;
+                });
+                el.innerHTML = html;
+            } catch (err) {
+                el.innerHTML = '<p>அறிவிப்புகளை ஏற்ற முடியவில்லை</p>';
+            }
+        }
+
+        async function loadFriendContributions() {
+            const tbody = document.getElementById('table-friends');
+            try {
+                const { data } = await supabaseClient.from('friend_contributions').select('*').order('created_at', { ascending: false });
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="loading-text">பதிவுகள் இல்லை</td></tr>';
+                    return;
+                }
+                let html = '', sum = 0;
+                data.forEach(item => {
+                    const amt = Number(item.amount || 0);
+                    sum += amt;
+                    html += `<tr><td>${formatDate(item.contribution_date)}</td><td><strong>${item.name}</strong></td><td class="amt-green">${formatINR(amt)}</td><td>${item.payment_mode || 'Cash'}</td></tr>`;
+                });
+                tbody.innerHTML = html;
+                totals.friends = sum;
+                totals.count = data.length;
+                document.getElementById('badge-friends').innerText = formatINR(sum);
+                updateCalculatedTotals();
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="4" class="loading-text">தரவு ஏற்றுவதில் பிழை</td></tr>';
+            }
+        }
+
+        async function loadSponsorContributions() {
+            const tbody = document.getElementById('table-sponsors');
+            try {
+                const { data } = await supabaseClient.from('sponsor_contributions').select('*');
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>';
+                    return;
+                }
+                let html = '', sum = 0;
+                data.forEach(item => {
+                    const amt = Number(item.amount || 0);
+                    sum += amt;
+                    html += `<tr><td><strong>${item.name || item.sponsor_name || '-'}</strong></td><td class="amt-green">${amt > 0 ? formatINR(amt) : (item.remarks || 'உபயம்')}</td></tr>`;
+                });
+                tbody.innerHTML = html;
+                totals.sponsors = sum;
+                document.getElementById('badge-sponsors').innerText = formatINR(sum);
+                updateCalculatedTotals();
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="2" class="loading-text">தரவு ஏற்றுவதில் பிழை</td></tr>';
+            }
+        }
+
+        async function loadAreaCollections() {
+            const tbody = document.getElementById('table-area');
+            try {
+                const { data } = await supabaseClient.from('area_collections').select('*');
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>';
+                    return;
+                }
+                let html = '', sum = 0;
+                data.forEach(item => {
+                    const amt = Number(item.amount || item.total_amount || 0);
+                    sum += amt;
+                    html += `<tr><td>${item.area_name || item.street_name || '-'}</td><td class="amt-green">${formatINR(amt)}</td></tr>`;
+                });
+                tbody.innerHTML = html;
+                totals.area = sum;
+                document.getElementById('badge-area').innerText = formatINR(sum);
+                updateCalculatedTotals();
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="2" class="loading-text">தரவு ஏற்றுவதில் பிழை</td></tr>';
+            }
+        }
+
+        async function loadExpenses() {
+            const tbody = document.getElementById('table-expenses');
+            try {
+                const { data } = await supabaseClient.from('expenses').select('*');
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>';
+                    return;
+                }
+                let html = '', sum = 0;
+                data.forEach(item => {
+                    const amt = Number(item.amount || 0);
+                    sum += amt;
+                    html += `<tr><td>${item.title || item.description || '-'}</td><td class="amt-red">${formatINR(amt)}</td></tr>`;
+                });
+                tbody.innerHTML = html;
+                totals.expenses = sum;
+                document.getElementById('badge-expenses').innerText = formatINR(sum);
+                updateCalculatedTotals();
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="2" class="loading-text">தரவு ஏற்றுவதில் பிழை</td></tr>';
+            }
+        }
+
+        async function loadPrograms() {
+            const el = document.getElementById('programs-list');
+            try {
+                const { data } = await supabaseClient.from('programs').select('*');
+                if (!data || data.length === 0) {
+                    el.innerHTML = '<p>நிகழ்ச்சிகள் விவரம் இல்லை.</p>';
+                    return;
+                }
+                let html = '';
+                data.forEach(p => {
+                    html += `<div class="list-item"><strong>${p.program_name || p.title}</strong><br><small>⏰ ${p.program_time || '-'} | 📍 ${p.location || 'விழா மேடை'}</small></div>`;
+                });
+                el.innerHTML = html;
+            } catch (err) {
+                el.innerHTML = '<p>நிகழ்ச்சிகளை ஏற்ற முடியவில்லை</p>';
+            }
+        }
+
+        // Initialize Data Load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (SUPABASE_URL === "YOUR_SUPABASE_URL_HERE") {
+                showError("Supabase credentials missing! Edit index.html lines 282-283.");
+                return;
+            }
+            loadFestivalSettings();
+            loadAnnouncements();
+            loadFriendContributions();
+            loadSponsorContributions();
+            loadAreaCollections();
+            loadExpenses();
+            loadPrograms();
+        });
+    </script>
+</body>
+</html>
