@@ -113,32 +113,34 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Animated Account Card */
-        @property --angle {
-            syntax: '<angle>';
-            initial-value: 0deg;
-            inherits: false;
-        }
-
-        @keyframes rotateBorder {
-            to { --angle: 360deg; }
-        }
-
+        /* --- ATTRACTIVE HIGHLIGHTED ACCOUNT CARD --- */
         .animated-account-card {
-            position: relative;
             background: #ffffff;
             border-radius: 22px;
             padding: 22px;
             text-align: center;
+            border: 3px solid #f59e0b;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+            animation: cardPulse 3s infinite ease-in-out;
             margin-bottom: 20px;
-            border: 3px solid transparent;
-            background-image: 
-                linear-gradient(#ffffff, #ffffff), 
-                conic-gradient(from var(--angle), #f59e0b, #ea580c, #ef4444, #10b981, #f59e0b);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            animation: rotateBorder 4s linear infinite;
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
+        }
+
+        @keyframes cardPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+                border-color: #f59e0b;
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 12px 35px rgba(234, 88, 12, 0.4);
+                border-color: #ea580c;
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+                border-color: #f59e0b;
+            }
         }
 
         .animated-account-card h2 {
@@ -164,13 +166,21 @@
             text-align: center;
         }
 
-        .stat-box span { display: block; font-size: 13px; color: #777; margin-bottom: 4px; }
-        .stat-box strong { font-size: 20px; }
+        .stat-box span {
+            display: block;
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 4px;
+        }
+
+        .stat-box strong {
+            font-size: 20px;
+        }
 
         .text-green { color: #15803d; }
         .text-red { color: #b91c1c; }
-        .text-blue { color: #2563eb; }
 
+        /* HIGHLIGHTED BALANCE DISPLAY */
         .balance-highlight-box {
             background: linear-gradient(135deg, #15803d, #166534);
             color: white;
@@ -195,6 +205,7 @@
             display: block;
         }
 
+        /* General Cards & Tables */
         .card {
             background: white;
             margin-bottom: 18px;
@@ -215,38 +226,7 @@
             align-items: center;
         }
 
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 10px;
-            border: 1px solid #fed7aa;
-        }
-
-        .adaptable-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            text-align: left;
-            min-width: 500px;
-        }
-
-        .adaptable-table th {
-            background-color: #ffedd5;
-            color: #9a3412;
-            padding: 10px 8px;
-            font-size: 13px;
-            font-weight: bold;
-            border: 1px solid #fed7aa;
-        }
-
-        .adaptable-table td {
-            padding: 10px 8px;
-            border: 1px solid #f3f4f6;
-        }
-
-        .adaptable-table tbody tr:nth-child(even) { background-color: #fffaf5; }
-
+        .table-responsive { width: 100%; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; margin-top: 10px; }
         th { background-color: #ffedd5; color: #9a3412; padding: 10px; font-size: 13px; }
         td { padding: 10px; border-bottom: 1px solid #f3f4f6; }
@@ -263,6 +243,7 @@
         .footer { text-align: center; padding: 15px 10px 30px; color: #777; font-size: 12px; }
         .footer .om { font-size: 24px; }
 
+        /* PWA Installation Modal */
         .pwa-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 9999;
@@ -293,6 +274,7 @@
 </head>
 <body>
 
+    <!-- Header -->
     <header class="hero">
         <button id="header-install-btn" class="header-install-btn" onclick="openInstallPrompt()">📲 Install App</button>
         <div class="ganesha">🕉️</div>
@@ -303,6 +285,7 @@
     <main class="container">
         <div id="error-banner" class="error-banner"></div>
 
+        <!-- TAB NAVIGATION MENU -->
         <nav class="tab-menu">
             <button class="tab-btn active" onclick="switchTab('tab-home', this)">🏠 முகப்பு</button>
             <button class="tab-btn" onclick="switchTab('tab-friends', this)">🤝 நண்பர்கள்</button>
@@ -314,7 +297,7 @@
             <button class="tab-btn" onclick="switchTab('tab-announcements', this)">📢 அறிவிப்புகள்</button>
         </nav>
 
-        <!-- 1. HOME TAB -->
+        <!-- 1. HOME TAB (HIGHLIGHTED DASHBOARD CARD) -->
         <div id="tab-home" class="tab-content active">
             <section class="animated-account-card">
                 <h2>💰 வரவு - செலவு கணக்கு</h2>
@@ -337,36 +320,24 @@
             </section>
         </div>
 
-        <!-- 2. FRIENDS TAB (WITH TOTAL CARD) -->
+        <!-- 2. FRIENDS TAB -->
         <div id="tab-friends" class="tab-content">
-            <div class="card" style="margin-bottom: 15px;">
-                <h2>🤝 நண்பர்கள் நன்கொடை (Friends Collection)</h2>
-                
-                <div class="balance-highlight-box" style="background: linear-gradient(135deg, #b45309, #d97706);">
-                    <span>Total Friends Collection</span>
-                    <strong id="friends-summary-total">₹0</strong>
-                </div>
-            </div>
-
             <section class="card">
                 <h2>
-                    <span>📋 நன்கொடை விவரம் (Contributions Log)</span>
+                    <span>🤝 நண்பர்கள் நன்கொடை</span>
                     <span class="badge" id="badge-friends">₹0</span>
                 </h2>
                 <div class="table-responsive">
-                    <table class="adaptable-table">
+                    <table>
                         <thead>
                             <tr>
-                                <th style="width: 40px; text-align: center;">Sl.No</th>
-                                <th style="white-space: nowrap;">Date</th>
-                                <th style="min-width: 120px;">Name</th>
-                                <th style="white-space: nowrap; text-align: right;">Amount Contributed</th>
-                                <th style="min-width: 100px;">Given to</th>
-                                <th style="min-width: 120px;">Remarks</th>
+                                <th>தேதி</th>
+                                <th>பெயர்</th>
+                                <th>தொகை</th>
                             </tr>
                         </thead>
                         <tbody id="table-friends">
-                            <tr><td colspan="6" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                            <tr><td colspan="3" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -398,45 +369,21 @@
 
         <!-- 4. AREA COLLECTION TAB -->
         <div id="tab-area" class="tab-content">
-            <div class="card" style="margin-bottom: 15px;">
-                <h2>🏘️ பகுதி வசூல் (Area Collection)</h2>
-                
-                <div class="balance-highlight-box" style="margin-bottom: 12px; background: linear-gradient(135deg, #b45309, #d97706);">
-                    <span>Total Area Collection</span>
-                    <strong id="area-summary-total">₹0</strong>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <span>💵 Cash</span>
-                        <strong class="text-green" id="area-summary-cash">₹0</strong>
-                    </div>
-                    <div class="stat-box">
-                        <span>📱 Online / UPI</span>
-                        <strong class="text-blue" id="area-summary-online">₹0</strong>
-                    </div>
-                </div>
-            </div>
-
             <section class="card">
                 <h2>
-                    <span>📅 தினசரி வசூல் விவரம் (Daily Log)</span>
+                    <span>🏘️ பகுதி வாரியான வசூல்</span>
                     <span class="badge" id="badge-area">₹0</span>
                 </h2>
                 <div class="table-responsive">
-                    <table class="adaptable-table">
+                    <table>
                         <thead>
                             <tr>
-                                <th style="width: 40px; text-align: center;">#</th>
-                                <th style="white-space: nowrap;">Date</th>
-                                <th style="text-align: right; white-space: nowrap;">Total Collected</th>
-                                <th style="text-align: right; white-space: nowrap;">Cash</th>
-                                <th style="text-align: right; white-space: nowrap;">Online</th>
-                                <th style="min-width: 120px;">Remarks</th>
+                                <th>பகுதி / தெரு</th>
+                                <th>தொகை</th>
                             </tr>
                         </thead>
                         <tbody id="table-area">
-                            <tr><td colspan="6" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                            <tr><td colspan="2" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -556,6 +503,10 @@
         }
 
         function formatINR(amount) { return '₹' + Number(amount || 0).toLocaleString('en-IN'); }
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            return new Date(dateStr).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit' });
+        }
 
         let totals = { friends: 0, sponsors: 0, area: 0, expenses: 0 };
         function updateCalculatedTotals() {
@@ -582,60 +533,20 @@
             } catch (e) { document.getElementById('announcements-list').innerHTML = 'ஏற்றுவதில் பிழை'; }
         }
 
-        /* --- FRIEND CONTRIBUTIONS WITH SUMMARY TOTAL DISPLAY --- */
         async function loadFriendContributions() {
             try {
-                const { data, error } = await supabaseClient
-                    .from('friend_contributions')
-                    .select('*')
-                    .order('created_at', { ascending: true });
-
-                if (error) throw error;
-
-                if (!data || data.length === 0) {
-                    document.getElementById('table-friends').innerHTML = 
-                        '<tr><td colspan="6" class="loading-text">பதிவுகள் இல்லை</td></tr>';
-                    document.getElementById('friends-summary-total').innerText = '₹0';
-                    return;
-                }
-
+                const { data } = await supabaseClient.from('friend_contributions').select('*').order('created_at', { ascending: false });
+                if (!data || data.length === 0) { document.getElementById('table-friends').innerHTML = '<tr><td colspan="3" class="loading-text">பதிவுகள் இல்லை</td></tr>'; return; }
                 let html = '', sum = 0;
-                data.forEach((item, index) => {
-                    const amt = Number(item.amount || item.amount_contributed || 0);
-                    sum += amt;
-
-                    let formattedDate = '-';
-                    if (item.date || item.contribution_date) {
-                        const d = new Date(item.date || item.contribution_date);
-                        if (!isNaN(d)) {
-                            formattedDate = String(d.getDate()).padStart(2, '0') + '-' + 
-                                            String(d.getMonth() + 1).padStart(2, '0') + '-' + 
-                                            d.getFullYear();
-                        } else {
-                            formattedDate = item.date || item.contribution_date;
-                        }
-                    }
-
-                    html += `<tr>
-                        <td style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
-                        <td style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
-                        <td style="font-weight: bold; color: #3f2a14;">${item.name || '-'}</td>
-                        <td class="amt-green" style="text-align: right; white-space: nowrap;">${formatINR(amt)}</td>
-                        <td>${item.given_to || '-'}</td>
-                        <td style="color: #666; font-size: 12px;">${item.remarks || '-'}</td>
-                    </tr>`;
+                data.forEach(item => {
+                    const amt = Number(item.amount || 0); sum += amt;
+                    html += `<tr><td>${formatDate(item.contribution_date)}</td><td><strong>${item.name}</strong><br><small style="color:#777;">${item.payment_mode || 'Cash'}</small></td><td class="amt-green">${formatINR(amt)}</td></tr>`;
                 });
-
                 document.getElementById('table-friends').innerHTML = html;
-                document.getElementById('friends-summary-total').innerText = formatINR(sum);
                 totals.friends = sum;
                 document.getElementById('badge-friends').innerText = formatINR(sum);
                 updateCalculatedTotals();
-            } catch (e) {
-                console.error(e);
-                document.getElementById('table-friends').innerHTML = 
-                    '<tr><td colspan="6" style="text-align:center; color:red; padding:15px;">தரவு ஏற்றுவதில் பிழை ஏற்பட்டது</td></tr>';
-            }
+            } catch (e) { document.getElementById('table-friends').innerHTML = '<tr><td colspan="3">பிழை</td></tr>'; }
         }
 
         async function loadSponsorContributions() {
@@ -656,65 +567,18 @@
 
         async function loadAreaCollections() {
             try {
-                const { data, error } = await supabaseClient
-                    .from('area_collections')
-                    .select('*')
-                    .order('collection_date', { ascending: true });
-
-                if (error) throw error;
-
-                if (!data || data.length === 0) {
-                    document.getElementById('table-area').innerHTML = '<tr><td colspan="6" class="loading-text">பதிவுகள் இல்லை</td></tr>';
-                    document.getElementById('area-summary-total').innerText = '₹0';
-                    document.getElementById('area-summary-cash').innerText = '₹0';
-                    document.getElementById('area-summary-online').innerText = '₹0';
-                    return;
-                }
-
-                let html = '';
-                let totalArea = 0, totalCash = 0, totalOnline = 0;
-
-                data.forEach((item, index) => {
-                    const totalAmt = Number(item.total_amount || 0);
-                    const cashAmt = Number(item.cash_amount || 0);
-                    const onlineAmt = Number(item.online_amount || 0);
-
-                    totalArea += totalAmt;
-                    totalCash += cashAmt;
-                    totalOnline += onlineAmt;
-
-                    let formattedDate = '-';
-                    if (item.collection_date) {
-                        const d = new Date(item.collection_date);
-                        if (!isNaN(d)) {
-                            formattedDate = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-                        } else {
-                            formattedDate = item.collection_date;
-                        }
-                    }
-
-                    html += `<tr>
-                        <td style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
-                        <td style="white-space: nowrap; font-size: 13px; font-weight: bold;">${formattedDate}</td>
-                        <td class="amt-green" style="text-align: right; white-space: nowrap;">${formatINR(totalAmt)}</td>
-                        <td style="text-align: right; white-space: nowrap; color: #15803d;">${formatINR(cashAmt)}</td>
-                        <td style="text-align: right; white-space: nowrap; color: #2563eb;">${formatINR(onlineAmt)}</td>
-                        <td style="color: #666; font-size: 12px;">${item.remarks || '-'}</td>
-                    </tr>`;
+                const { data } = await supabaseClient.from('area_collections').select('*');
+                if (!data || data.length === 0) { document.getElementById('table-area').innerHTML = '<tr><td colspan="2" class="loading-text">பதிவுகள் இல்லை</td></tr>'; return; }
+                let html = '', sum = 0;
+                data.forEach(item => {
+                    const amt = Number(item.amount || item.total_amount || 0); sum += amt;
+                    html += `<tr><td>${item.area_name || item.street_name || '-'}</td><td class="amt-green">${formatINR(amt)}</td></tr>`;
                 });
-
                 document.getElementById('table-area').innerHTML = html;
-                document.getElementById('area-summary-total').innerText = formatINR(totalArea);
-                document.getElementById('area-summary-cash').innerText = formatINR(totalCash);
-                document.getElementById('area-summary-online').innerText = formatINR(totalOnline);
-                
-                totals.area = totalArea;
-                document.getElementById('badge-area').innerText = formatINR(totalArea);
+                totals.area = sum;
+                document.getElementById('badge-area').innerText = formatINR(sum);
                 updateCalculatedTotals();
-            } catch (e) { 
-                console.error(e);
-                document.getElementById('table-area').innerHTML = '<tr><td colspan="6" style="text-align:center; color:red; padding:15px;">தரவு ஏற்றுவதில் பிழை ஏற்பட்டது</td></tr>'; 
-            }
+            } catch (e) { document.getElementById('table-area').innerHTML = '<tr><td colspan="2">பிழை</td></tr>'; }
         }
 
         async function loadExpenses() {
@@ -741,7 +605,7 @@
             } catch (e) { document.getElementById('programs-list').innerHTML = 'ஏற்றுவதில் பிழை'; }
         }
 
-        /* --- PWA INSTALL ENGINE --- */
+        // --- PWA INSTALL ENGINE ---
         let deferredPrompt = null;
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -798,7 +662,7 @@
 
             if (SUPABASE_URL.includes("YOUR_SUPABASE")) {
                 document.getElementById('error-banner').style.display = 'block';
-                document.getElementById('error-banner').innerText = "Supabase credentials missing!";
+                document.getElementById('error-banner').innerText = "Supabase credentials missing! Edit index.html lines 342-343.";
                 return;
             }
 
