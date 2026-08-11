@@ -608,6 +608,12 @@
 
     <!-- JS & SUPABASE LOGIC -->
     <script>
+        /* --- AUTO RELOAD ON PWA LAUNCH --- */
+        if (!sessionStorage.getItem('pwa_launched_refresh')) {
+            sessionStorage.setItem('pwa_launched_refresh', 'true');
+            window.location.reload();
+        }
+
         function switchTab(tabId, btnElement, isBackEvent = false) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -989,14 +995,26 @@
             }
         }
 
-        /* --- PWA INSTALL ENGINE --- */
+        /* --- PWA INSTALL & AUTO-UPDATE ENGINE --- */
         let deferredPrompt = null;
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
-                navigator.serviceWorker.register("./sw.js").catch(err => console.log("SW Error:", err));
+                navigator.serviceWorker.register("./sw.js").then(reg => {
+                    // Force service worker update check on launch
+                    reg.update();
+                }).catch(err => console.log("SW Error:", err));
+            });
+
+            // Auto reload page when new Service Worker claims control
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
             });
         }
 
