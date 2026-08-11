@@ -824,82 +824,122 @@
         }
 
         /* --- EXPENSES --- */
-        async function loadExpenses() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('expenses')
-                    .select('*')
-                    .order('created_at', { ascending: true });
+        /* --- EXPENSES --- */
+async function loadExpenses() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('expenses')
+            .select('*')
+            .order('expense_date', { ascending: true });
 
-                if (error) throw error;
+        if (error) throw error;
 
-                if (!data || data.length === 0) { 
-                    document.getElementById('table-expenses').innerHTML = 
-                        '<tr><td colspan="5" class="loading-text">பதிவுகள் இல்லை</td></tr>'; 
-                    document.getElementById('badge-expenses').innerText = '₹0';
-                    return; 
-                }
-
-                let html = '', sum = 0;
-                data.forEach((item, index) => {
-                    const amt = Number(item.amount || 0); 
-                    sum += amt;
-
-                    let formattedDate = '-';
-                    if (item.expense_date || item.date) {
-                        const d = new Date(item.expense_date || item.date);
-                        if (!isNaN(d)) {
-                            formattedDate = String(d.getDate()).padStart(2, '0') + '-' + 
-                                            String(d.getMonth() + 1).padStart(2, '0') + '-' + 
-                                            d.getFullYear();
-                        } else {
-                            formattedDate = item.expense_date || item.date;
-                        }
-                    }
-
-                    const itemDetails = item.item || item.title || item.description || '-';
-                    const paidBy = item.paid_by || '-';
-
-                    html += `<tr>
-                        <td data-label="SL.No" style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
-                        <td data-label="Date" style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
-                        <td data-label="Item Involved" style="font-weight: 600; color: #3f2a14;">${itemDetails}</td>
-                        <td data-label="Amount" class="amt-red" style="text-align: right; white-space: nowrap;">${formatINR(amt)}</td>
-                        <td data-label="Paid By" style="font-weight: bold; color: #c2410c;">${paidBy}</td>
-                    </tr>`;
-                });
-
-                document.getElementById('table-expenses').innerHTML = html;
-                totals.expenses = sum;
-                document.getElementById('badge-expenses').innerText = formatINR(sum);
-                updateCalculatedTotals();
-            } catch (e) { 
-                console.error(e);
-                document.getElementById('table-expenses').innerHTML = 
-                    '<tr><td colspan="5" style="text-align:center; color:red; padding:15px;">தரவு ஏற்றுவதில் பிழை ஏற்பட்டது</td></tr>'; 
-            }
+        if (!data || data.length === 0) { 
+            document.getElementById('table-expenses').innerHTML = 
+                '<tr><td colspan="6" class="loading-text">பதிவுகள் இல்லை</td></tr>'; 
+            document.getElementById('badge-expenses').innerText = '₹0';
+            return; 
         }
+
+        let html = '', sum = 0;
+        data.forEach((item, index) => {
+            const amt = Number(item.amount || 0); 
+            sum += amt;
+
+            let formattedDate = '-';
+            if (item.expense_date || item.date) {
+                const d = new Date(item.expense_date || item.date);
+                if (!isNaN(d)) {
+                    formattedDate = String(d.getDate()).padStart(2, '0') + '-' + 
+                                    String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+                                    d.getFullYear();
+                } else {
+                    formattedDate = item.expense_date || item.date;
+                }
+            }
+
+            const itemDetails = item.item || item.title || item.description || '-';
+            const paidBy = item.paid_by || '-';
+            const remarks = item.remarks || '-';
+
+            html += `<tr>
+                <td data-label="SL.No" style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
+                <td data-label="Date" style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
+                <td data-label="Item Involved" style="font-weight: 600; color: #3f2a14;">${itemDetails}</td>
+                <td data-label="Amount" class="amt-red" style="text-align: right; white-space: nowrap;">${formatINR(amt)}</td>
+                <td data-label="Paid By" style="font-weight: bold; color: #c2410c;">${paidBy}</td>
+                <td data-label="Remarks" style="color: #666; font-size: 12px;">${remarks}</td>
+            </tr>`;
+        });
+
+        document.getElementById('table-expenses').innerHTML = html;
+        totals.expenses = sum;
+        document.getElementById('badge-expenses').innerText = formatINR(sum);
+        updateCalculatedTotals();
+    } catch (e) { 
+        console.error(e);
+        document.getElementById('table-expenses').innerHTML = 
+            '<tr><td colspan="6" style="text-align:center; color:red; padding:15px;">தரவு ஏற்றுவதில் பிழை ஏற்பட்டது</td></tr>'; 
+    }
+}
 
         /* --- PROGRAMS --- */
-        async function loadPrograms() {
-            try {
-                const { data } = await supabaseClient.from('programs').select('*').order('date', { ascending: true });
-                if (!data || data.length === 0) { 
-                    document.getElementById('programs-list').innerHTML = '<p class="loading-text">நிகழ்ச்சிகள் விவரம் விரைவில்...</p>'; 
-                    return; 
-                }
-                let html = data.map(p => `
-                    <div class="list-item">
-                        <strong style="color: #c2410c; font-size: 15px;">${p.title || p.program_name || 'நிகழ்ச்சி'}</strong><br>
-                        <small style="color: #666;">📅 ${p.date || p.program_date || ''} ${p.time || p.program_time ? '| ⏰ ' + (p.time || p.program_time) : ''}</small>
-                        ${p.description ? `<p style="margin: 5px 0 0; font-size: 13px;">${p.description}</p>` : ''}
-                    </div>
-                `).join('');
-                document.getElementById('programs-list').innerHTML = html;
-            } catch (e) { 
-                document.getElementById('programs-list').innerHTML = 'ஏற்றுவதில் பிழை'; 
-            }
+        /* --- PROGRAMS --- */
+async function loadPrograms() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('programs')
+            .select('*')
+            .eq('is_active', true) // Only fetch active programs
+            .order('display_order', { ascending: true }) // Sort by display order
+            .order('program_date', { ascending: true }); // Fallback sort by date
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) { 
+            document.getElementById('programs-list').innerHTML = 
+                '<p class="loading-text">நிகழ்ச்சிகள் விவரம் விரைவில்...</p>'; 
+            return; 
         }
+
+        let html = data.map(p => {
+            // Format Date (DD-MM-YYYY)
+            let formattedDate = '';
+            if (p.program_date) {
+                const d = new Date(p.program_date);
+                if (!isNaN(d)) {
+                    formattedDate = String(d.getDate()).padStart(2, '0') + '-' + 
+                                    String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+                                    d.getFullYear();
+                } else {
+                    formattedDate = p.program_date;
+                }
+            }
+
+            return `
+                <div class="list-item" style="padding: 12px 0; border-bottom: 1px dashed #fed7aa;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                        <strong style="color: #c2410c; font-size: 16px;">${p.title || 'நிகழ்ச்சி'}</strong>
+                        ${p.location ? `<span style="background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold;">📍 ${p.location}</span>` : ''}
+                    </div>
+
+                    <div style="color: #666; font-size: 12px; margin-bottom: 6px;">
+                        ${formattedDate ? `📅 <strong>${formattedDate}</strong>` : ''} 
+                        ${p.program_time ? `&nbsp;|&nbsp; ⏰ <strong>${p.program_time}</strong>` : ''}
+                    </div>
+
+                    ${p.description ? `<p style="margin: 4px 0 0; font-size: 13px; color: #444; line-height: 1.4;">${p.description}</p>` : ''}
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('programs-list').innerHTML = html;
+    } catch (e) { 
+        console.error(e);
+        document.getElementById('programs-list').innerHTML = 
+            '<p class="loading-text" style="color: red;">நிகழ்ச்சிகளை ஏற்றுவதில் பிழை ஏற்பட்டது</p>'; 
+    }
+}
 
         /* --- PWA INSTALL ENGINE --- */
         let deferredPrompt = null;
