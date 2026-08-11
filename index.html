@@ -114,7 +114,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 4px;
+            flex-wrap: wrap;
         }
 
         .tab-btn.active {
@@ -123,6 +124,13 @@
             border-color: #d97706;
             box-shadow: 0 6px 15px rgba(217, 119, 6, 0.4);
             transform: translateY(-2px);
+        }
+
+        .tab-amt {
+            font-size: 11px;
+            font-weight: normal;
+            opacity: 0.85;
+            margin-left: 2px;
         }
 
         .tab-content {
@@ -139,7 +147,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Animated Account Card */
+        /* Animated Account Card - EXTRA THICK BORDER & HIGH VISIBILITY */
         @property --angle {
             syntax: '<angle>';
             initial-value: 0deg;
@@ -157,22 +165,31 @@
             padding: 22px;
             text-align: center;
             margin-bottom: 20px;
-            border: 3px solid transparent;
+            /* Extra thick border */
+            border: 4px solid transparent;
             background-image: 
                 linear-gradient(#ffffff, #ffffff), 
-                conic-gradient(from var(--angle), #f59e0b, #ea580c, #ef4444, #10b981, #f59e0b);
+                conic-gradient(from var(--angle), #ea580c, #f59e0b, #eab308, #10b981, #ea580c);
             background-origin: border-box;
             background-clip: padding-box, border-box;
-            animation: rotateBorder 4s linear infinite;
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
+            animation: rotateBorder 3s linear infinite;
+            /* Stronger glowing shadow */
+            box-shadow: 0 10px 30px rgba(234, 88, 12, 0.3);
+            outline: 2px solid #fed7aa;
+            outline-offset: -6px;
         }
 
         .animated-account-card h2 {
-            margin: 0 0 15px;
+            margin: 0 0 18px;
             color: #c2410c;
-            font-size: 20px;
-            border-bottom: 2px dashed #fed7aa;
-            padding-bottom: 10px;
+            font-size: 21px;
+            font-weight: 800;
+            background: #fff7ed;
+            padding: 8px 12px;
+            border-radius: 12px;
+            border-bottom: 3px solid #f97316;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
 
         .stats-grid {
@@ -335,24 +352,32 @@
 <body>
 
     <header class="hero">
-    <button id="header-install-btn" class="header-install-btn" onclick="openInstallPrompt()">📲 Install App</button>
-    <div class="ganesha">🕉️</div>
-    <h1>சேலவாயல் நண்பர்கள்</h1>
-    <p style="font-size: 16px; font-weight: bold; margin-top: 4px; color: #fef08a;">
-        13-ஆம் ஆண்டு கற்பக விநாயகர் சதுர்த்தி விழா 2026
-    </p>
-    <p>🌺அனைவரும் வருக! விநாயகர் அருள் பெறுக!🌺</p>
-</header>
+        <button id="header-install-btn" class="header-install-btn" onclick="openInstallPrompt()">📲 Install App</button>
+        <div class="ganesha">🕉️</div>
+        <h1>சேலவாயல் நண்பர்கள்</h1>
+        <p style="font-size: 16px; font-weight: bold; margin-top: 4px; color: #fef08a;">
+            13-ஆம் ஆண்டு கற்பக விநாயகர் சதுர்த்தி விழா 2026
+        </p>
+        <p>🌺அனைவரும் வருக! விநாயகர் அருள் பெறுக!🌺</p>
+    </header>
 
     <main class="container">
         <div id="error-banner" class="error-banner"></div>
 
         <nav class="tab-menu">
             <button class="tab-btn active" onclick="switchTab('tab-home', this)">🏠 முகப்பு</button>
-            <button class="tab-btn" onclick="switchTab('tab-friends', this)">🤝 நண்பர்கள்</button>
-            <button class="tab-btn" onclick="switchTab('tab-sponsors', this)">⭐ உபயதாரர்கள்</button>
-            <button class="tab-btn" onclick="switchTab('tab-area', this)">🏘️ பகுதி வசூல்</button>
-            <button class="tab-btn" onclick="switchTab('tab-expenses', this)">💸 செலவுகள்</button>
+            <button class="tab-btn" onclick="switchTab('tab-friends', this)">
+                🤝 நண்பர்கள் <span class="tab-amt" id="btn-amt-friends">(₹0)</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('tab-sponsors', this)">
+                ⭐ உபயதாரர்கள் <span class="tab-amt" id="btn-amt-sponsors">(₹0)</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('tab-area', this)">
+                🏘️ பகுதி வசூல் <span class="tab-amt" id="btn-amt-area">(₹0)</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('tab-expenses', this)">
+                💸 செலவுகள் <span class="tab-amt" id="btn-amt-expenses">(₹0)</span>
+            </button>
             <button class="tab-btn" onclick="switchTab('tab-programs', this)">🎉 நிகழ்ச்சிகள்</button>
         </nav>
 
@@ -518,10 +543,11 @@
                                 <th style="min-width: 150px;">Item Involved</th>
                                 <th style="text-align: right; white-space: nowrap;">Amount</th>
                                 <th style="min-width: 100px;">Paid By</th>
+                                <th style="min-width: 120px;">Remarks</th>
                             </tr>
                         </thead>
                         <tbody id="table-expenses">
-                            <tr><td colspan="5" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
+                            <tr><td colspan="6" class="loading-text">தரவுகள் ஏற்றப்படுகின்றன...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -640,9 +666,36 @@
         function updateCalculatedTotals() {
             const totalCollection = totals.friends + totals.sponsors + totals.area;
             const balance = totalCollection - totals.expenses;
+            
             document.getElementById('summary-total-collection').innerText = formatINR(totalCollection);
             document.getElementById('summary-expenses').innerText = formatINR(totals.expenses);
             document.getElementById('summary-balance').innerText = formatINR(balance);
+
+            // Update amounts in navigation buttons
+            if (document.getElementById('btn-amt-friends')) {
+                document.getElementById('btn-amt-friends').innerText = `(${formatINR(totals.friends)})`;
+            }
+            if (document.getElementById('btn-amt-sponsors')) {
+                document.getElementById('btn-amt-sponsors').innerText = `(${formatINR(totals.sponsors)})`;
+            }
+            if (document.getElementById('btn-amt-area')) {
+                document.getElementById('btn-amt-area').innerText = `(${formatINR(totals.area)})`;
+            }
+            if (document.getElementById('btn-amt-expenses')) {
+                document.getElementById('btn-amt-expenses').innerText = `(${formatINR(totals.expenses)})`;
+            }
+        }
+
+        /* --- CENTRAL DATA REFRESH FUNCTION --- */
+        function refreshAllData() {
+            if (supabaseClient) {
+                console.log("Refreshing data from Supabase...");
+                loadFriendContributions();
+                loadSponsorContributions(); 
+                loadAreaCollections(); 
+                loadExpenses(); 
+                loadPrograms();
+            }
         }
 
         /* --- FRIEND CONTRIBUTIONS --- */
@@ -824,122 +877,119 @@
         }
 
         /* --- EXPENSES --- */
-        /* --- EXPENSES --- */
-async function loadExpenses() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('expenses')
-            .select('*')
-            .order('expense_date', { ascending: true });
+        async function loadExpenses() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('expenses')
+                    .select('*')
+                    .order('expense_date', { ascending: true });
 
-        if (error) throw error;
+                if (error) throw error;
 
-        if (!data || data.length === 0) { 
-            document.getElementById('table-expenses').innerHTML = 
-                '<tr><td colspan="6" class="loading-text">பதிவுகள் இல்லை</td></tr>'; 
-            document.getElementById('badge-expenses').innerText = '₹0';
-            return; 
+                if (!data || data.length === 0) { 
+                    document.getElementById('table-expenses').innerHTML = 
+                        '<tr><td colspan="6" class="loading-text">பதிவுகள் இல்லை</td></tr>'; 
+                    document.getElementById('badge-expenses').innerText = '₹0';
+                    return; 
+                }
+
+                let html = '', sum = 0;
+                data.forEach((item, index) => {
+                    const amt = Number(item.amount || 0); 
+                    sum += amt;
+
+                    let formattedDate = '-';
+                    if (item.expense_date || item.date) {
+                        const d = new Date(item.expense_date || item.date);
+                        if (!isNaN(d)) {
+                            formattedDate = String(d.getDate()).padStart(2, '0') + '-' + 
+                                            String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+                                            d.getFullYear();
+                        } else {
+                            formattedDate = item.expense_date || item.date;
+                        }
+                    }
+
+                    const itemDetails = item.item || item.title || item.description || '-';
+                    const paidBy = item.paid_by || '-';
+                    const remarks = item.remarks || '-';
+
+                    html += `<tr>
+                        <td data-label="SL.No" style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
+                        <td data-label="Date" style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
+                        <td data-label="Item Involved" style="font-weight: 600; color: #3f2a14;">${itemDetails}</td>
+                        <td data-label="Amount" class="amt-red" style="text-align: right; white-space: nowrap;">${formatINR(amt)}</td>
+                        <td data-label="Paid By" style="font-weight: bold; color: #c2410c;">${paidBy}</td>
+                        <td data-label="Remarks" style="color: #666; font-size: 12px;">${remarks}</td>
+                    </tr>`;
+                });
+
+                document.getElementById('table-expenses').innerHTML = html;
+                totals.expenses = sum;
+                document.getElementById('badge-expenses').innerText = formatINR(sum);
+                updateCalculatedTotals();
+            } catch (e) { 
+                console.error(e);
+                document.getElementById('table-expenses').innerHTML = 
+                    '<tr><td colspan="6" style="text-align:center; color:red; padding:15px;">தரவு ஏற்றுவதில் பிழை ஏற்பட்டது</td></tr>'; 
+            }
         }
 
-        let html = '', sum = 0;
-        data.forEach((item, index) => {
-            const amt = Number(item.amount || 0); 
-            sum += amt;
+        /* --- PROGRAMS --- */
+        async function loadPrograms() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('programs')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('display_order', { ascending: true })
+                    .order('program_date', { ascending: true });
 
-            let formattedDate = '-';
-            if (item.expense_date || item.date) {
-                const d = new Date(item.expense_date || item.date);
-                if (!isNaN(d)) {
-                    formattedDate = String(d.getDate()).padStart(2, '0') + '-' + 
-                                    String(d.getMonth() + 1).padStart(2, '0') + '-' + 
-                                    d.getFullYear();
-                } else {
-                    formattedDate = item.expense_date || item.date;
+                if (error) throw error;
+
+                if (!data || data.length === 0) { 
+                    document.getElementById('programs-list').innerHTML = 
+                        '<p class="loading-text">நிகழ்ச்சிகள் விவரம் விரைவில்...</p>'; 
+                    return; 
                 }
+
+                let html = data.map(p => {
+                    let formattedDate = '';
+                    if (p.program_date) {
+                        const d = new Date(p.program_date);
+                        if (!isNaN(d)) {
+                            formattedDate = String(d.getDate()).padStart(2, '0') + '-' + 
+                                            String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+                                            d.getFullYear();
+                        } else {
+                            formattedDate = p.program_date;
+                        }
+                    }
+
+                    return `
+                        <div class="list-item" style="padding: 12px 0; border-bottom: 1px dashed #fed7aa;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                                <strong style="color: #c2410c; font-size: 16px;">${p.title || 'நிகழ்ச்சி'}</strong>
+                                ${p.location ? `<span style="background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold;">📍 ${p.location}</span>` : ''}
+                            </div>
+
+                            <div style="color: #666; font-size: 12px; margin-bottom: 6px;">
+                                ${formattedDate ? `📅 <strong>${formattedDate}</strong>` : ''} 
+                                ${p.program_time ? `&nbsp;|&nbsp; ⏰ <strong>${p.program_time}</strong>` : ''}
+                            </div>
+
+                            ${p.description ? `<p style="margin: 4px 0 0; font-size: 13px; color: #444; line-height: 1.4;">${p.description}</p>` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('programs-list').innerHTML = html;
+            } catch (e) { 
+                console.error(e);
+                document.getElementById('programs-list').innerHTML = 
+                    '<p class="loading-text" style="color: red;">நிகழ்ச்சிகளை ஏற்றுவதில் பிழை ஏற்பட்டது</p>'; 
             }
-
-            const itemDetails = item.item || item.title || item.description || '-';
-            const paidBy = item.paid_by || '-';
-            const remarks = item.remarks || '-';
-
-            html += `<tr>
-                <td data-label="SL.No" style="text-align: center; font-weight: bold; color: #777;">${index + 1}</td>
-                <td data-label="Date" style="white-space: nowrap; font-size: 13px;">${formattedDate}</td>
-                <td data-label="Item Involved" style="font-weight: 600; color: #3f2a14;">${itemDetails}</td>
-                <td data-label="Amount" class="amt-red" style="text-align: right; white-space: nowrap;">${formatINR(amt)}</td>
-                <td data-label="Paid By" style="font-weight: bold; color: #c2410c;">${paidBy}</td>
-                <td data-label="Remarks" style="color: #666; font-size: 12px;">${remarks}</td>
-            </tr>`;
-        });
-
-        document.getElementById('table-expenses').innerHTML = html;
-        totals.expenses = sum;
-        document.getElementById('badge-expenses').innerText = formatINR(sum);
-        updateCalculatedTotals();
-    } catch (e) { 
-        console.error(e);
-        document.getElementById('table-expenses').innerHTML = 
-            '<tr><td colspan="6" style="text-align:center; color:red; padding:15px;">தரவு ஏற்றுவதில் பிழை ஏற்பட்டது</td></tr>'; 
-    }
-}
-
-        /* --- PROGRAMS --- */
-        /* --- PROGRAMS --- */
-async function loadPrograms() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('programs')
-            .select('*')
-            .eq('is_active', true) // Only fetch active programs
-            .order('display_order', { ascending: true }) // Sort by display order
-            .order('program_date', { ascending: true }); // Fallback sort by date
-
-        if (error) throw error;
-
-        if (!data || data.length === 0) { 
-            document.getElementById('programs-list').innerHTML = 
-                '<p class="loading-text">நிகழ்ச்சிகள் விவரம் விரைவில்...</p>'; 
-            return; 
         }
-
-        let html = data.map(p => {
-            // Format Date (DD-MM-YYYY)
-            let formattedDate = '';
-            if (p.program_date) {
-                const d = new Date(p.program_date);
-                if (!isNaN(d)) {
-                    formattedDate = String(d.getDate()).padStart(2, '0') + '-' + 
-                                    String(d.getMonth() + 1).padStart(2, '0') + '-' + 
-                                    d.getFullYear();
-                } else {
-                    formattedDate = p.program_date;
-                }
-            }
-
-            return `
-                <div class="list-item" style="padding: 12px 0; border-bottom: 1px dashed #fed7aa;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
-                        <strong style="color: #c2410c; font-size: 16px;">${p.title || 'நிகழ்ச்சி'}</strong>
-                        ${p.location ? `<span style="background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold;">📍 ${p.location}</span>` : ''}
-                    </div>
-
-                    <div style="color: #666; font-size: 12px; margin-bottom: 6px;">
-                        ${formattedDate ? `📅 <strong>${formattedDate}</strong>` : ''} 
-                        ${p.program_time ? `&nbsp;|&nbsp; ⏰ <strong>${p.program_time}</strong>` : ''}
-                    </div>
-
-                    ${p.description ? `<p style="margin: 4px 0 0; font-size: 13px; color: #444; line-height: 1.4;">${p.description}</p>` : ''}
-                </div>
-            `;
-        }).join('');
-
-        document.getElementById('programs-list').innerHTML = html;
-    } catch (e) { 
-        console.error(e);
-        document.getElementById('programs-list').innerHTML = 
-            '<p class="loading-text" style="color: red;">நிகழ்ச்சிகளை ஏற்றுவதில் பிழை ஏற்பட்டது</p>'; 
-    }
-}
 
         /* --- PWA INSTALL ENGINE --- */
         let deferredPrompt = null;
@@ -997,6 +1047,7 @@ async function loadPrograms() {
             closeInstallModal();
         });
 
+        /* --- DOM CONTENT LOADED & AUTO-REFRESH INITIALIZATION --- */
         window.addEventListener('DOMContentLoaded', () => {
             const promptSeen = localStorage.getItem('festival_install_prompt_seen');
             if (isIOS && !promptSeen && !isStandalone) setTimeout(() => openInstallPrompt(), 2000);
@@ -1007,13 +1058,21 @@ async function loadPrograms() {
                 return;
             }
 
-            if (supabaseClient) {
-                loadFriendContributions();
-                loadSponsorContributions(); 
-                loadAreaCollections(); 
-                loadExpenses(); 
-                loadPrograms();
-            }
+            // 1. Initial Load
+            refreshAllData();
+
+            // 2. Auto-refresh data every 5 minutes (300,000 ms)
+            const FIVE_MINUTES = 1 * 60 * 1000;
+            setInterval(() => {
+                refreshAllData();
+            }, FIVE_MINUTES);
+
+            // 3. Instant refresh when user switches back to the app/tab
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    refreshAllData();
+                }
+            });
         });
     </script>
 </body>
