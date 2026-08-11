@@ -1049,31 +1049,44 @@
 
         /* --- DOM CONTENT LOADED & AUTO-REFRESH INITIALIZATION --- */
         window.addEventListener('DOMContentLoaded', () => {
-            const promptSeen = localStorage.getItem('festival_install_prompt_seen');
-            if (isIOS && !promptSeen && !isStandalone) setTimeout(() => openInstallPrompt(), 2000);
+    const promptSeen = localStorage.getItem('festival_install_prompt_seen');
+    if (isIOS && !promptSeen && !isStandalone) setTimeout(() => openInstallPrompt(), 2000);
 
-            if (SUPABASE_URL.includes("YOUR_SUPABASE")) {
-                document.getElementById('error-banner').style.display = 'block';
-                document.getElementById('error-banner').innerText = "Supabase credentials missing!";
-                return;
-            }
+    if (SUPABASE_URL.includes("YOUR_SUPABASE")) {
+        document.getElementById('error-banner').style.display = 'block';
+        document.getElementById('error-banner').innerText = "Supabase credentials missing!";
+        return;
+    }
 
-            // 1. Initial Load
-            refreshAllData();
+    // 1. Initial Data Fetch on page load
+    refreshAllData();
 
-            // 2. Auto-refresh data every 5 minutes (300,000 ms)
-            const FIVE_MINUTES = 1 * 60 * 1000;
-            setInterval(() => {
-                refreshAllData();
-            }, FIVE_MINUTES);
-
-            // 3. Instant refresh when user switches back to the app/tab
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'visible') {
+    // 2. Realtime Listener: Refresh data instantly when any table changes
+    if (supabaseClient) {
+        supabaseClient
+            .channel('festival-realtime-changes')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public' },
+                (payload) => {
+                    console.log('Database change detected:', payload.table);
                     refreshAllData();
                 }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('Connected to Supabase Realtime.');
+                }
             });
-        });
+    }
+
+    // 3. Fallback refresh when the user returns to the tab/app
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            refreshAllData();
+        }
+    });
+});
     </script>
 </body>
 </html>
