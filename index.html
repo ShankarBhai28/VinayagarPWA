@@ -192,21 +192,21 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
             margin-bottom: 15px;
         }
 
         .stat-box {
             background: #fff7ed;
-            padding: 14px 8px;
+            padding: 12px 6px;
             border-radius: 14px;
             border: 1px solid #fed7aa;
             text-align: center;
         }
 
-        .stat-box span { display: block; font-size: 13px; color: #777; margin-bottom: 4px; }
-        .stat-box strong { font-size: 20px; }
+        .stat-box span { display: block; font-size: 11px; color: #777; margin-bottom: 4px; font-weight: bold; }
+        .stat-box strong { font-size: 16px; }
 
         .text-green { color: #15803d; }
         .text-red { color: #b91c1c; }
@@ -344,6 +344,8 @@
 
         @media (min-width: 600px) {
             .tab-menu { grid-template-columns: repeat(3, 1fr); }
+            .stat-box span { font-size: 13px; }
+            .stat-box strong { font-size: 20px; }
         }
     </style>
 </head>
@@ -386,11 +388,15 @@
                 
                 <div class="stats-grid">
                     <div class="stat-box">
-                        <span>மொத்த வரவு</span>
-                        <strong class="text-green" id="summary-total-collection">₹0</strong>
+                        <span>கடந்த ஆண்டு இருப்பு</span>
+                        <strong class="text-blue" id="summary-opening-balance">₹25,501</strong>
                     </div>
                     <div class="stat-box">
-                        <span>மொத்த செலவு</span>
+                        <span>இந்த ஆண்டின் வரவு</span>
+                        <strong class="text-green" id="summary-this-year-collection">₹0</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span>இந்த ஆண்டின் செலவு</span>
                         <strong class="text-red" id="summary-expenses">₹0</strong>
                     </div>
                 </div>
@@ -487,7 +493,7 @@
                     <strong id="area-summary-total">₹0</strong>
                 </div>
 
-                <div class="stats-grid">
+                <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="stat-box">
                         <span>💵 Cash</span>
                         <strong class="text-green" id="area-summary-cash">₹0</strong>
@@ -666,14 +672,22 @@
 
         function formatINR(amount) { return '₹' + Number(amount || 0).toLocaleString('en-IN'); }
 
+        const OPENING_BALANCE = 25501;
         let totals = { friends: 0, sponsors: 0, area: 0, expenses: 0 };
+        
         function updateCalculatedTotals() {
-            const totalCollection = totals.friends + totals.sponsors + totals.area;
-            const balance = totalCollection - totals.expenses;
+            const thisYearCollection = totals.friends + totals.sponsors + totals.area;
+            const grandTotalIncome = OPENING_BALANCE + thisYearCollection;
+            const netBalance = grandTotalIncome - totals.expenses;
             
-            document.getElementById('summary-total-collection').innerText = formatINR(totalCollection);
+            if (document.getElementById('summary-opening-balance')) {
+                document.getElementById('summary-opening-balance').innerText = formatINR(OPENING_BALANCE);
+            }
+            if (document.getElementById('summary-this-year-collection')) {
+                document.getElementById('summary-this-year-collection').innerText = formatINR(thisYearCollection);
+            }
             document.getElementById('summary-expenses').innerText = formatINR(totals.expenses);
-            document.getElementById('summary-balance').innerText = formatINR(balance);
+            document.getElementById('summary-balance').innerText = formatINR(netBalance);
 
             // Update amounts in navigation buttons
             if (document.getElementById('btn-amt-friends')) {
