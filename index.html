@@ -147,7 +147,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Animated Account Card - EXTRA THICK BORDER & HIGH VISIBILITY */
+        /* Animated Account Card */
         @property --angle {
             syntax: '<angle>';
             initial-value: 0deg;
@@ -165,7 +165,6 @@
             padding: 22px;
             text-align: center;
             margin-bottom: 20px;
-            /* Extra thick border */
             border: 4px solid transparent;
             background-image: 
                 linear-gradient(#ffffff, #ffffff), 
@@ -173,7 +172,6 @@
             background-origin: border-box;
             background-clip: padding-box, border-box;
             animation: rotateBorder 3s linear infinite;
-            /* Stronger glowing shadow */
             box-shadow: 0 10px 30px rgba(234, 88, 12, 0.3);
             outline: 2px solid #fed7aa;
             outline-offset: -6px;
@@ -1047,46 +1045,69 @@
             closeInstallModal();
         });
 
-        /* --- DOM CONTENT LOADED & AUTO-REFRESH INITIALIZATION --- */
+        /* --- DOM CONTENT LOADED & REALTIME ENGINE INITIALIZATION --- */
+        let realtimeChannel = null;
+
+        function setupRealtimeSubscription() {
+            if (realtimeChannel) {
+                supabaseClient.removeChannel(realtimeChannel);
+            }
+
+            realtimeChannel = supabaseClient
+                .channel('festival-realtime-changes')
+                .on(
+                    'postgres_changes',
+                    { event: '*', schema: 'public' },
+                    (payload) => {
+                        console.log('Realtime change detected:', payload.table);
+                        refreshAllData();
+                    }
+                )
+                .subscribe((status) => {
+                    console.log('Realtime Status:', status);
+                    if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+                        setTimeout(() => setupRealtimeSubscription(), 3000);
+                    }
+                });
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
-    const promptSeen = localStorage.getItem('festival_install_prompt_seen');
-    if (isIOS && !promptSeen && !isStandalone) setTimeout(() => openInstallPrompt(), 2000);
+            const promptSeen = localStorage.getItem('festival_install_prompt_seen');
+            if (isIOS && !promptSeen && !isStandalone) setTimeout(() => openInstallPrompt(), 2000);
 
-    if (SUPABASE_URL.includes("YOUR_SUPABASE")) {
-        document.getElementById('error-banner').style.display = 'block';
-        document.getElementById('error-banner').innerText = "Supabase credentials missing!";
-        return;
-    }
+            if (SUPABASE_URL.includes("YOUR_SUPABASE")) {
+                document.getElementById('error-banner').style.display = 'block';
+                document.getElementById('error-banner').innerText = "Supabase credentials missing!";
+                return;
+            }
 
-    // 1. Initial Data Fetch on page load
-    refreshAllData();
+            // 1. Initial Data Fetch
+            refreshAllData();
 
-    // 2. Realtime Listener: Refresh data instantly when any table changes
-    if (supabaseClient) {
-        supabaseClient
-            .channel('festival-realtime-changes')
-            .on(
-                'postgres_changes',
-                { event: '*', schema: 'public' },
-                (payload) => {
-                    console.log('Database change detected:', payload.table);
+            // 2. Start Realtime Engine
+            if (supabaseClient) {
+                setupRealtimeSubscription();
+            }
+
+            // 3. Fallback Polling (30s) — Low load safety net for backgrounded PWA workers
+            setInterval(() => {
+                refreshAllData();
+            }, 30000);
+
+            // 4. Reconnect & Fetch when PWA returns to foreground
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    console.log('PWA Resumed: Reconnecting Realtime & Syncing...');
                     refreshAllData();
-                }
-            )
-            .subscribe((status) => {
-                if (status === 'SUBSCRIBED') {
-                    console.log('Connected to Supabase Realtime.');
+                    setupRealtimeSubscription();
                 }
             });
-    }
 
-    // 3. Fallback refresh when the user returns to the tab/app
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-            refreshAllData();
-        }
-    });
-});
+            window.addEventListener('focus', () => {
+                refreshAllData();
+                setupRealtimeSubscription();
+            });
+        });
     </script>
 </body>
 </html>
