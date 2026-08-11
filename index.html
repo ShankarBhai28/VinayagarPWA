@@ -162,7 +162,7 @@
             position: relative;
             background: #ffffff;
             border-radius: 22px;
-            padding: 22px 14px;
+            padding: 22px 16px;
             text-align: center;
             margin-bottom: 20px;
             border: 4px solid transparent;
@@ -180,10 +180,10 @@
         .animated-account-card h2 {
             margin: 0 0 18px;
             color: #c2410c;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 800;
             background: #fff7ed;
-            padding: 8px 6px;
+            padding: 10px 14px;
             border-radius: 12px;
             border-bottom: 3px solid #f97316;
             display: block;
@@ -191,30 +191,33 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
 
+        /* Updated 2-Column Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 15px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .stat-box {
             background: #fff7ed;
-            padding: 12px 6px;
-            border-radius: 14px;
+            padding: 14px 6px;
+            border-radius: 16px;
             border: 1px solid #fed7aa;
             text-align: center;
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.8);
         }
 
         .stat-box span { 
             display: block; 
-            font-size: 10px; 
-            color: #777; 
-            margin-bottom: 4px; 
+            font-size: 11px; 
+            color: #666; 
+            margin-bottom: 6px; 
             font-weight: bold; 
             line-height: 1.2;
+            white-space: nowrap;
         }
-        .stat-box strong { font-size: 16px; }
+        .stat-box strong { font-size: 18px; font-weight: 800; }
 
         .text-green { color: #15803d; }
         .text-red { color: #b91c1c; }
@@ -352,9 +355,9 @@
 
         @media (min-width: 600px) {
             .tab-menu { grid-template-columns: repeat(3, 1fr); }
-            .stat-box span { font-size: 11px; }
-            .stat-box strong { font-size: 20px; }
-            .animated-account-card h2 { font-size: 20px; padding: 8px 12px; display: inline-block; }
+            .stat-box span { font-size: 12px; }
+            .stat-box strong { font-size: 22px; }
+            .animated-account-card h2 { font-size: 20px; padding: 8px 16px; display: inline-block; }
         }
     </style>
 </head>
@@ -364,6 +367,7 @@
         <button id="header-install-btn" class="header-install-btn" onclick="openInstallPrompt()">📲 Install App</button>
         <div class="ganesha">🕉️</div>
         <h1>சேலவாயல் நண்பர்கள்</h1>
+        <p style="font-size: 14px; font-weight: bold; margin-top: 2px; color: #fed7aa;">நடத்தும்</p>
         <p style="font-size: 16px; font-weight: bold; margin-top: 4px; color: #fef08a;">
             13-ஆம் ஆண்டு கற்பக விநாயகர் சதுர்த்தி விழா 2026
         </p>
@@ -396,10 +400,6 @@
                 <h2>💰 வரவு - செலவு கணக்கு</h2>
                 
                 <div class="stats-grid">
-                    <div class="stat-box">
-                        <span>கடந்த ஆண்டு இருப்பு</span>
-                        <strong class="text-blue" id="summary-opening-balance">₹25,501</strong>
-                    </div>
                     <div class="stat-box">
                         <span>இந்த ஆண்டின் வரவு</span>
                         <strong class="text-green" id="summary-this-year-collection">₹0</strong>
@@ -681,17 +681,12 @@
 
         function formatINR(amount) { return '₹' + Number(amount || 0).toLocaleString('en-IN'); }
 
-        const OPENING_BALANCE = 25501;
         let totals = { friends: 0, sponsors: 0, area: 0, expenses: 0 };
         
         function updateCalculatedTotals() {
             const thisYearCollection = totals.friends + totals.sponsors + totals.area;
-            const grandTotalIncome = OPENING_BALANCE + thisYearCollection;
-            const netBalance = grandTotalIncome - totals.expenses;
+            const netBalance = thisYearCollection - totals.expenses;
             
-            if (document.getElementById('summary-opening-balance')) {
-                document.getElementById('summary-opening-balance').innerText = formatINR(OPENING_BALANCE);
-            }
             if (document.getElementById('summary-this-year-collection')) {
                 document.getElementById('summary-this-year-collection').innerText = formatINR(thisYearCollection);
             }
