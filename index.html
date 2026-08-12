@@ -542,9 +542,19 @@
         <!-- 5. EXPENSES TAB -->
         <div id="tab-expenses" class="tab-content">
             <button class="back-btn" onclick="handleBackAction()">⬅️ Back</button>
+
+            <div class="card" style="margin-bottom: 15px;">
+                <h2>💸 செலவுகள் (Expenses)</h2>
+                
+                <div class="balance-highlight-box" style="background: linear-gradient(135deg, #b91c1c, #991b1b);">
+                    <span>Total Expense Amount</span>
+                    <strong id="expenses-summary-total">₹0</strong>
+                </div>
+            </div>
+
             <section class="card">
                 <h2>
-                    <span>💸 செலவுகள் (Expenses)</span>
+                    <span>💸 செலவுகள் விவரம்</span>
                     <span class="badge" style="background:#fee2e2; color:#b91c1c;" id="badge-expenses">₹0</span>
                 </h2>
                 <div class="table-responsive">
@@ -912,6 +922,7 @@
                     document.getElementById('table-expenses').innerHTML = 
                         '<tr><td colspan="6" class="loading-text">பதிவுகள் இல்லை</td></tr>'; 
                     document.getElementById('badge-expenses').innerText = '₹0';
+                    document.getElementById('expenses-summary-total').innerText = '₹0';
                     return; 
                 }
 
@@ -949,6 +960,7 @@
                 document.getElementById('table-expenses').innerHTML = html;
                 totals.expenses = sum;
                 document.getElementById('badge-expenses').innerText = formatINR(sum);
+                document.getElementById('expenses-summary-total').innerText = formatINR(sum);
                 updateCalculatedTotals();
             } catch (e) { 
                 console.error(e);
