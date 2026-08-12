@@ -1094,7 +1094,7 @@
         /* --- DOM CONTENT LOADED & REALTIME ENGINE INITIALIZATION --- */
         let realtimeChannel = null;
 
-        function setupRealtimeSubscription() {
+        /*function setupRealtimeSubscription() {
             if (realtimeChannel) {
                 supabaseClient.removeChannel(realtimeChannel);
             }
@@ -1115,7 +1115,40 @@
                         setTimeout(() => setupRealtimeSubscription(), 3000);
                     }
                 });
-        }
+        } */
+
+        function setupRealtimeSubscription() {
+    if (realtimeChannel) {
+        supabaseClient.removeChannel(realtimeChannel);
+    }
+
+    realtimeChannel = supabaseClient
+        .channel('festival-realtime-changes')
+        /* --- A. Listen for DB Postgres Changes --- */
+        .on(
+            'postgres_changes',
+            { event: '*', schema: 'public' },
+            (payload) => {
+                console.log('Realtime change detected:', payload.table);
+                refreshAllData();
+            }
+        )
+        /* --- B. Listen for Admin Broadcast Signal --- */
+        .on(
+            'broadcast',
+            { event: 'admin_force_refresh' },
+            (payload) => {
+                console.log('Admin forced a manual refresh:', payload);
+                refreshAllData(); // Re-fetches data, OR use location.reload() to hard-reload the app
+            }
+        )
+        .subscribe((status) => {
+            console.log('Realtime Status:', status);
+            if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+                setTimeout(() => setupRealtimeSubscription(), 3000);
+            }
+        });
+}
 
         window.addEventListener('DOMContentLoaded', () => {
             const promptSeen = localStorage.getItem('festival_install_prompt_seen');
