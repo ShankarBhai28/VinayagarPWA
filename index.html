@@ -718,6 +718,34 @@
             }
         }
 
+        /* --- PERSISTENT UNIQUE VISITOR TRACKER --- */
+        async function trackUniqueVisitor() {
+            if (!supabaseClient) return;
+
+            // 1. Fetch or create unique Device ID in local storage
+            let deviceId = localStorage.getItem('app_device_id');
+            if (!deviceId) {
+                deviceId = crypto.randomUUID();
+                localStorage.setItem('app_device_id', deviceId);
+            }
+
+            // 2. Detect PWA vs Browser
+            const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+            // 3. Upsert into Supabase app_analytics
+            try {
+                await supabaseClient
+                    .from('app_analytics')
+                    .upsert({
+                        device_id: deviceId,
+                        is_pwa: isPWA,
+                        last_seen_at: new Date().toISOString()
+                    }, { onConflict: 'device_id' });
+            } catch (err) {
+                console.error("Tracking error:", err);
+            }
+        }
+
         /* --- CENTRAL DATA REFRESH FUNCTION --- */
         function refreshAllData() {
             if (supabaseClient) {
@@ -1091,13 +1119,15 @@
             closeInstallModal();
         });
 
-        /* --- DOM CONTENT LOADED & REALTIME ENGINE INITIALIZATION --- */
+        /* --- REALTIME & ANALYTICS ENGINE INITIALIZATION --- */
         let realtimeChannel = null;
 
-        /*function setupRealtimeSubscription() {
+        function setupRealtimeSubscription() {
             if (realtimeChannel) {
                 supabaseClient.removeChannel(realtimeChannel);
             }
+
+            const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
             realtimeChannel = supabaseClient
                 .channel('festival-realtime-changes')
@@ -1109,46 +1139,29 @@
                         refreshAllData();
                     }
                 )
+                .on(
+                    'broadcast',
+                    { event: 'admin_force_refresh' },
+                    (payload) => {
+                        console.log('Admin forced a manual refresh:', payload);
+                        refreshAllData();
+                    }
+                )
                 .subscribe((status) => {
                     console.log('Realtime Status:', status);
+
+                    if (status === 'SUBSCRIBED') {
+                        realtimeChannel.track({
+                            online_at: new Date().toISOString(),
+                            mode: isPWA ? 'PWA' : 'Browser'
+                        });
+                    }
+
                     if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
                         setTimeout(() => setupRealtimeSubscription(), 3000);
                     }
                 });
-        } */
-
-        function setupRealtimeSubscription() {
-    if (realtimeChannel) {
-        supabaseClient.removeChannel(realtimeChannel);
-    }
-
-    realtimeChannel = supabaseClient
-        .channel('festival-realtime-changes')
-        /* --- A. Listen for DB Postgres Changes --- */
-        .on(
-            'postgres_changes',
-            { event: '*', schema: 'public' },
-            (payload) => {
-                console.log('Realtime change detected:', payload.table);
-                refreshAllData();
-            }
-        )
-        /* --- B. Listen for Admin Broadcast Signal --- */
-        .on(
-            'broadcast',
-            { event: 'admin_force_refresh' },
-            (payload) => {
-                console.log('Admin forced a manual refresh:', payload);
-                refreshAllData(); // Re-fetches data, OR use location.reload() to hard-reload the app
-            }
-        )
-        .subscribe((status) => {
-            console.log('Realtime Status:', status);
-            if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
-                setTimeout(() => setupRealtimeSubscription(), 3000);
-            }
-        });
-}
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             const promptSeen = localStorage.getItem('festival_install_prompt_seen');
@@ -1159,6 +1172,9 @@
                 document.getElementById('error-banner').innerText = "Supabase credentials missing!";
                 return;
             }
+
+            // Track Unique Visitor on load
+            trackUniqueVisitor();
 
             refreshAllData();
 
@@ -1175,12 +1191,14 @@
                     console.log('PWA Resumed: Reconnecting Realtime & Syncing...');
                     refreshAllData();
                     setupRealtimeSubscription();
+                    trackUniqueVisitor();
                 }
             });
 
             window.addEventListener('focus', () => {
                 refreshAllData();
                 setupRealtimeSubscription();
+                trackUniqueVisitor();
             });
         });
     </script>
