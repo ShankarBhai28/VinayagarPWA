@@ -271,8 +271,8 @@
             width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            border-radius: 12px;
-            border: 1px solid #fed7aa;
+            border-radius: 5px;
+            border: 2px solid #fed7aa;
         }
 
         .adaptable-table {
@@ -314,7 +314,7 @@
 
         .adaptable-table tbody tr:nth-child(even) { background-color: #fffaf5; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; margin-top: 0px; }
         th { background-color: #ffedd5; color: #9a3412; padding: 10px; font-size: 13px; }
         td { padding: 10px; border-bottom: 1px solid #f3f4f6; }
         .amt-green { font-weight: bold; color: #15803d; }
@@ -352,6 +352,40 @@
         .pwa-btn-primary { background: linear-gradient(135deg, #ea580c, #b45309); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3); }
         .pwa-btn-secondary { background: transparent; color: #777; border: none; padding: 10px; font-size: 13px; cursor: pointer; text-decoration: underline; }
         .ios-instructions { text-align: left; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px 18px; border-radius: 14px; margin-bottom: 20px; color: #166534; font-size: 13px; }
+
+        /* Mobile Fix for Expenses Table */
+        @media (max-width: 600px) {
+            #tab-expenses .adaptable-table {
+                min-width: 100% !important;
+                table-layout: fixed;
+            }
+
+            #tab-expenses .adaptable-table th,
+            #tab-expenses .adaptable-table td {
+                padding: 8px 4px !important;
+                font-size: 9px !important;
+                word-wrap: break-word;
+            }
+
+            #tab-expenses .adaptable-table th:nth-child(1),
+            #tab-expenses .adaptable-table td:nth-child(1) { width: 10%; text-align: center; }
+
+            #tab-expenses .adaptable-table th:nth-child(2),
+            #tab-expenses .adaptable-table td:nth-child(2) { width: 22%; }
+
+            #tab-expenses .adaptable-table th:nth-child(3),
+            #tab-expenses .adaptable-table td:nth-child(3) { width: 43%; }
+
+            #tab-expenses .adaptable-table th:nth-child(4),
+            #tab-expenses .adaptable-table td:nth-child(4) { width: 25%; text-align: right; }
+
+            #tab-expenses .adaptable-table th:nth-child(5),
+            #tab-expenses .adaptable-table td:nth-child(5),
+            #tab-expenses .adaptable-table th:nth-child(6),
+            #tab-expenses .adaptable-table td:nth-child(6) {
+                display: none;
+            }
+        }
 
         @media (min-width: 600px) {
             .tab-menu { grid-template-columns: repeat(3, 1fr); }
